@@ -1,0 +1,88 @@
+﻿<Window x:Class="BinanceAlgorithm.WindowChart"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:my="clr-namespace:BinanceAlgorithm"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Height="400" Width="650" Background="DarkSlateBlue" mc:Ignorable="d">
+    <Control.Resources>
+        <ScaleTransform x:Key="trfFlip" ScaleY="-1" />
+        <ItemsPanelTemplate x:Key="tplCanvas">
+            <Canvas />
+        </ItemsPanelTemplate>
+        <Style x:Key="styFlipContainer" TargetType="FrameworkElement">
+            <Setter Property="RenderTransformOrigin" Value=".5 .5" />
+            <Setter Property="RenderTransform" Value="{StaticResource trfFlip}" />
+        </Style>
+        <Style TargetType="ItemsControl" BasedOn="{StaticResource styFlipContainer}">
+            <Setter Property="ItemsPanel" Value="{StaticResource tplCanvas}" />
+        </Style>
+        <Style TargetType="Canvas" BasedOn="{StaticResource styFlipContainer}"/>
+        <DataTemplate x:Key="tplLabel" DataType="sys:Double">
+            <TextBlock Text="{Binding ., StringFormat=0.0}" Margin="0 8 0 -8" Foreground="DarkGray" RenderTransform="{StaticResource trfFlip}" />
+        </DataTemplate>
+        <Style x:Key="styLabel" TargetType="ContentPresenter">
+            <Setter Property="Canvas.Top" Value="{Binding}" />
+        </Style>
+        <Style x:Key="styLabelLeft" TargetType="ContentPresenter" BasedOn="{StaticResource styLabel}">
+            <Setter Property="Canvas.Right" Value="10" />
+        </Style>
+        <Style x:Key="styLabelRight" TargetType="ContentPresenter" BasedOn="{StaticResource styLabel}">
+            <Setter Property="Canvas.Left" Value="10" />
+        </Style>
+        <DataTemplate x:Key="tplLineHorizontal" DataType="sys:Double">
+            <Rectangle Stroke="Gray" StrokeDashArray="4 8" StrokeThickness="1" Width="500" Height="1" />
+        </DataTemplate>
+        <Style x:Key="styCandle" TargetType="Shape">
+            <Setter Property="Stroke" Value="OrangeRed" />
+            <Setter Property="Fill" Value="DarkRed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPositive}" Value="True">
+                    <Setter Property="Stroke" Value="LawnGreen" />
+                    <Setter Property="Fill" Value="ForestGreen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <DataTemplate x:Key="tplCandleLine" DataType="my:Candle">
+            <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding Height}" />
+        </DataTemplate>
+        <Style x:Key="styCandleLine" TargetType="ContentPresenter">
+            <Setter Property="Canvas.Left" Value="{Binding Date}" />
+            <Setter Property="Canvas.Top" Value="{Binding Min}" />
+        </Style>
+        <DataTemplate x:Key="tplCandleRect" DataType="my:Candle">
+            <Rectangle Style="{StaticResource styCandle}" Width="6" Height="{Binding DeltaHeight}" Margin="-2 0 2 0" />
+        </DataTemplate>
+        <Style x:Key="styCandleRect" TargetType="ContentPresenter">
+            <Setter Property="Canvas.Left" Value="{Binding Date}" />
+            <Setter Property="Canvas.Top" Value="{Binding DeltaMin}" />
+        </Style>
+    </Control.Resources>
+    <Grid Height="{Binding PriceHeight}" Margin="0 70 0 -70">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="500" />
+            <ColumnDefinition Width="50" />
+        </Grid.ColumnDefinitions>
+        <ItemsControl Grid.Column="0" ItemsSource="{Binding Labels}"
+                ItemTemplate="{StaticResource tplLabel}" ItemContainerStyle="{StaticResource styLabelLeft}" />
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Labels}"
+                ItemTemplate="{StaticResource tplLineHorizontal}" ItemContainerStyle="{StaticResource styLabel}" />
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}"
+                ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}"
+                ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
+        <ItemsControl Grid.Column="2" ItemsSource="{Binding Labels}"
+                ItemTemplate="{StaticResource tplLabel}" ItemContainerStyle="{StaticResource styLabelRight}" />
+        <Canvas Grid.Column="1">
+            <Rectangle Canvas.Top="{Binding PriceCurrent}" Stroke="LightGray" Width="500" Height="2" />
+        </Canvas>
+        <Canvas Grid.Column="2">
+            <Border Canvas.Top="{Binding PriceCurrent}" Margin="6 10 0 -10"
+                    Background="LightGray" CornerRadius="3" RenderTransform="{StaticResource trfFlip}">
+                <TextBlock Text="{Binding PriceCurrent, StringFormat=0.0}" Foreground="DimGray" Margin="4 2" />
+            </Border>
+        </Canvas>
+    </Grid>
+</Window>

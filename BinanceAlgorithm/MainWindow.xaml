@@ -1,0 +1,71 @@
+﻿<Window x:Class="BinanceAlgorithm.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BinanceAlgorithm"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="509.768" Width="1382.524">
+    <Grid Margin="0,0,2,17">
+        <TextBox x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,9" TextWrapping="Wrap" Width="410"/>
+        <Button Content="Clear errors" HorizontalAlignment="Right" Margin="0,225,343,0" Width="74" Click="Button_ClearErrors" Height="20" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cmbTest1" ItemsSource="{Binding cmbContentFileNames}" HorizontalAlignment="Right" Margin="0,18,87,0" VerticalAlignment="Top" Width="344" Height="22"/>
+        <Button Content="Refile" HorizontalAlignment="Right" Margin="0,124,343,0" Width="76" Click="Button_Click_1" Height="20" VerticalAlignment="Top"/>
+        <Label Content="Klines:" HorizontalAlignment="Right" Margin="0,62,293,0" Width="60" Height="26" VerticalAlignment="Top"/>
+        <Label Content="-" Margin="0,63,233,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="16"/>
+        <TextBox Text="0" x:Name="klines_start" HorizontalAlignment="Right" Margin="0,66,255,0" TextWrapping="Wrap" Width="32" TextChanged="klines_start_TextChanged"  PreviewTextInput="digit_PreviewTextInput" Height="20" VerticalAlignment="Top"/>
+        <TextBox Text="499" x:Name="klines_end" HorizontalAlignment="Right" Margin="0,66,195,0" TextWrapping="Wrap" Width="32" TextChanged="klines_end_TextChanged"  PreviewTextInput="digit_PreviewTextInput" Height="20" VerticalAlignment="Top"/>
+        <Label Content="Start time:" HorizontalAlignment="Right" Margin="0,183,187,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <DatePicker x:Name="data_picker" Margin="0,144,67,0" VerticalAlignment="Top" Height="24" RenderTransformOrigin="0.33,0.625" HorizontalAlignment="Right" Width="100"/>
+        <Label Content="Date:" Margin="0,147,197,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.15,1.385" HorizontalAlignment="Right" Width="60"/>
+        <Label Content=":" Margin="0,186,113,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="16"/>
+        <TextBox Text="0" x:Name="start_time_h" HorizontalAlignment="Right" Margin="0,189,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
+        <TextBox Text="0" x:Name="start_time_m" Margin="0,189,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
+        <CheckBox IsChecked="True" x:Name="current_time" Content="Current time" Margin="0,124,170,0" Height="15" VerticalAlignment="Top" HorizontalAlignment="Right" Width="87"/>
+        <Label Content="End time:" HorizontalAlignment="Right" Margin="0,219,187,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <Label Content=":" Margin="1233,222,113,0" VerticalAlignment="Top" Height="26"/>
+        <TextBox Text="0" x:Name="end_time_h" HorizontalAlignment="Right" Margin="0,225,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
+        <TextBox Text="0" x:Name="end_time_m" Margin="0,225,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
+        <RadioButton x:Name="StartTime" GroupName="StartEndTime" HorizontalAlignment="Left" Margin="1079,189,0,0" VerticalAlignment="Top" Height="14" Width="15"/>
+        <RadioButton x:Name="EndTime" GroupName="StartEndTime" IsChecked="True" HorizontalAlignment="Left" Margin="1079,225,0,0" VerticalAlignment="Top" Height="14" Width="15"/>
+        <TextBox x:Name="api_key" HorizontalAlignment="Left" Height="23" Margin="110,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
+        <TextBox x:Name="secret_key" HorizontalAlignment="Left" Height="23" Margin="110,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" RenderTransformOrigin="1.207,0.696"/>
+        <Button x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="204,153,0,0" VerticalAlignment="Top" Width="74" Click="Button_Login" Height="20" />
+        <Label x:Name="label1" Content="Api Key:" HorizontalAlignment="Left" Margin="26,18,0,0" VerticalAlignment="Top" Height="26" Width="52"/>
+        <Label x:Name="label2" Content="Secret Key:" HorizontalAlignment="Left" Margin="26,49,0,0" VerticalAlignment="Top" Height="26" Width="67"/>
+        <Label x:Name="label3" Content="Name:" HorizontalAlignment="Left" Margin="26,80,0,0" VerticalAlignment="Top" Height="26" Width="44"/>
+        <TextBox x:Name="client_name" HorizontalAlignment="Left" Height="23" Margin="110,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
+        <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="110,153,0,0" VerticalAlignment="Top" Width="76" Click="Button_Save" RenderTransformOrigin="0.803,0.55" Height="20" />
+        <ComboBox x:Name="BoxName" ItemsSource="{Binding BoxNameContent}" HorizontalAlignment="Left" Margin="26,117,0,0" VerticalAlignment="Top" Width="252" Height="22"/>
+        <Button x:Name="Exit" Content="Exit" HorizontalAlignment="Left" Margin="26,153,0,0" VerticalAlignment="Top" Width="76" Click="Exit_Click" Height="20"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="203,225,0,0" VerticalAlignment="Top" Width="74" Click="Button_Click" RenderTransformOrigin="0.439,-1.225" Height="20"/>
+        <TextBox x:Name="price_change" HorizontalAlignment="Left" Height="22" Margin="110,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76"/>
+        <Label Content="Price change:" HorizontalAlignment="Left" Margin="26,222,0,0" VerticalAlignment="Top" Height="26" Width="80"/>
+        <ComboBox x:Name="compare_1" ItemsSource="{Binding Compare1}" HorizontalAlignment="Left" Margin="26,278,0,0" VerticalAlignment="Top" Width="76" Height="22"/>
+        <ComboBox x:Name="compare_2" ItemsSource="{Binding Compare2}" HorizontalAlignment="Left" Margin="110,278,0,0" VerticalAlignment="Top" Width="76" Height="22"/>
+        <Button Content="Start" HorizontalAlignment="Left" Margin="203,278,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="LoadTableEmaCompare"/>
+        <TextBox x:Name="order_open" HorizontalAlignment="Left" Height="20" Margin="63,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="order_tp" HorizontalAlignment="Left" Height="20" Margin="147,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
+        <TextBox x:Name="order_sl" HorizontalAlignment="Left" Height="20" Margin="238,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
+        <Label Content="Long period" HorizontalAlignment="Left" Margin="26,252,0,0" VerticalAlignment="Top"/>
+        <Label Content="Short period" HorizontalAlignment="Left" Margin="110,252,0,0" VerticalAlignment="Top"/>
+        <Label Content="SL" HorizontalAlignment="Left" Margin="204,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="TP" HorizontalAlignment="Left" Margin="110,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Start" HorizontalAlignment="Left" Margin="26,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <ListView Margin="296,21,449,10" x:Name="HistoryList" SelectionChanged="HistoryList_SelectionChanged" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Sumbol}" Width="100" >Sumbol</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=long_bet}" Width="70">long-bet</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=long_win}" Width="70">long_win</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=long_loss}" Width="70">long_loss</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=short_bet}" Width="70">short_bet</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=short_win}" Width="70">short_win</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=short_loss}" Width="70">short_loss</GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+    </Grid>
+</Window>

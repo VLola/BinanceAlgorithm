@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BinanceAlgorithm"
         mc:Ignorable="d"
-        Title="MainWindow" Height="509.768" Width="1382.524">
+        Title="MainWindow" Height="509.768" Width="1450.524">
     <Grid Margin="0,0,2,17">
         <TextBox x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,9" TextWrapping="Wrap" Width="410"/>
         <Button Content="Clear errors" HorizontalAlignment="Right" Margin="0,225,343,0" Width="74" Click="Button_ClearErrors" Height="20" VerticalAlignment="Top"/>
@@ -26,8 +26,10 @@
         <Label Content=":" Margin="1233,222,113,0" VerticalAlignment="Top" Height="26"/>
         <TextBox Text="0" x:Name="end_time_h" HorizontalAlignment="Right" Margin="0,225,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
         <TextBox Text="0" x:Name="end_time_m" Margin="0,225,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
-        <RadioButton x:Name="StartTime" GroupName="StartEndTime" HorizontalAlignment="Left" Margin="1079,189,0,0" VerticalAlignment="Top" Height="14" Width="15"/>
-        <RadioButton x:Name="EndTime" GroupName="StartEndTime" IsChecked="True" HorizontalAlignment="Left" Margin="1079,225,0,0" VerticalAlignment="Top" Height="14" Width="15"/>
+        <RadioButton x:Name="StartTime" GroupName="StartEndTime" Margin="0,189,272,0" VerticalAlignment="Top" Height="14" HorizontalAlignment="Right" Width="15">
+            <WrapPanel Height="100" Width="100"/>
+        </RadioButton>
+        <RadioButton x:Name="EndTime" GroupName="StartEndTime" IsChecked="True" Margin="0,225,272,0" VerticalAlignment="Top" Height="14" HorizontalAlignment="Right" Width="15"/>
         <TextBox x:Name="api_key" HorizontalAlignment="Left" Height="23" Margin="110,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
         <TextBox x:Name="secret_key" HorizontalAlignment="Left" Height="23" Margin="110,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" RenderTransformOrigin="1.207,0.696"/>
         <Button x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="204,153,0,0" VerticalAlignment="Top" Width="74" Click="Button_Login" Height="20" />
@@ -51,20 +53,24 @@
         <Label Content="Short period" HorizontalAlignment="Left" Margin="110,252,0,0" VerticalAlignment="Top"/>
         <Label Content="SL" HorizontalAlignment="Left" Margin="204,314,0,0" VerticalAlignment="Top" Height="24"/>
         <Label Content="TP" HorizontalAlignment="Left" Margin="110,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <Label Content="Start" HorizontalAlignment="Left" Margin="26,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <ListView Margin="296,21,449,10" x:Name="HistoryList" SelectionChanged="HistoryList_SelectionChanged" >
+        <ListView Margin="296,49,449,10" x:Name="HistoryList" SelectionChanged="HistoryList_SelectionChanged" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Sumbol}" Width="100" >Sumbol</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=long_bet}" Width="70">long-bet</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=long_win}" Width="70">long_win</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=long_loss}" Width="70">long_loss</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=short_bet}" Width="70">short_bet</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=short_win}" Width="70">short_win</GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=short_loss}" Width="70">short_loss</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Sumbol}" Width="100" Header="Sumbol"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding long_bet}" Width="70" Header="long-bet"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding long_win}" Width="70" Header="long-win"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding long_loss}" Width="70" Header="long-loss"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding short_bet}" Width="70" Header="short-bet"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding short_win}" Width="70" Header="short-win"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding short_loss}" Width="70" Header="short-loss"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding long_percent}" Width="70" Header="long-win-%"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding short_percent}" Width="70" Header="short-win-%"/>
                 </GridView>
             </ListView.View>
         </ListView>
+        <Label Content="Start" HorizontalAlignment="Left" Margin="26,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="305,21,0,0" VerticalAlignment="Top" Width="76"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="398,21,0,0" VerticalAlignment="Top" Width="76"/>
 
 
     </Grid>

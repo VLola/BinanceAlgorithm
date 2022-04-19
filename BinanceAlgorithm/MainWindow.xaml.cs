@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using BinanceAlgorithm.Resourses;
 using BinanceAlgorithm.Resourses.EmaResourses;
 using System.Data;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace BinanceAlgorithm
 {
@@ -20,6 +22,9 @@ namespace BinanceAlgorithm
     {
         public List<EmaCompare> ema_list = new List<EmaCompare>();
         public List<ListKlines> LIST_KLINES = new List<ListKlines>();
+        public GridViewColumnHeader _lastHeaderClicked = null;
+        public ListSortDirection _lastDirection = ListSortDirection.Descending;
+        public ICollectionView dataView;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,11 +34,12 @@ namespace BinanceAlgorithm
             Exit.Visibility = Visibility.Hidden; 
             LoadButtonsCompare();
             HistoryList.ItemsSource = history;
+            dataView = CollectionViewSource.GetDefaultView(HistoryList.ItemsSource);
             order_open.Text = "0,5";
             order_sl.Text = "0,1";
             order_tp.Text = "0,1";
         }
-        
+
         #region - Login -
         // ------------------------------------------------------- Start Client Block -------------------------------------------
         private void Clients()
@@ -429,6 +435,8 @@ namespace BinanceAlgorithm
             try
             {
                 history.Clear();
+                dataView.SortDescriptions.Clear();
+
                 string path_ema = System.IO.Path.Combine(Environment.CurrentDirectory, "ema");
                 string json1 = File.ReadAllText(path_ema + "\\" + compare_1.ToString());
                 string json2 = File.ReadAllText(path_ema + "\\" + compare_2.ToString());
@@ -452,9 +460,6 @@ namespace BinanceAlgorithm
                     ListEma percent_result = new ListEma(sumbol, list_decimal);
                     list_result.Add(percent_result);
                 }
-                string json = JsonConvert.SerializeObject(list_result);
-                File.WriteAllText(path_ema + "/" + "valik", json);
-
                 //-----------------------------------------------------------------------------------
                 decimal start = Convert.ToDecimal(order_open.Text);
                 decimal tp = Convert.ToDecimal(order_tp.Text);
@@ -542,6 +547,69 @@ namespace BinanceAlgorithm
         {
             WindowChart new_chart = new WindowChart();
             new_chart.ShowDialog();
+        }
+        #endregion
+
+        #region - Sorted -
+        void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        {
+            var headerClicked = e.OriginalSource as GridViewColumnHeader;
+            ListSortDirection direction;
+
+            if (headerClicked != null)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        if (_lastDirection == ListSortDirection.Ascending)
+                        {
+                            direction = ListSortDirection.Descending;
+                        }
+                        else
+                        {
+                            direction = ListSortDirection.Ascending;
+                        }
+                    }
+
+                    var columnBinding = headerClicked.Column.DisplayMemberBinding as Binding;
+                    var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
+
+                    Sort(sortBy, direction);
+
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    }
+                    else
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    }
+
+                    // Remove arrow from previously sorted header
+                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    {
+                        _lastHeaderClicked.Column.HeaderTemplate = null;
+                    }
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
+
+        private void Sort(string sortBy, ListSortDirection direction)
+        {
+            dataView.SortDescriptions.Clear();
+            SortDescription sd = new SortDescription(sortBy, direction);
+            dataView.SortDescriptions.Add(sd);
+            dataView.Refresh();
         }
         #endregion
     }

@@ -53,7 +53,7 @@
         <Label Content="Short period" HorizontalAlignment="Left" Margin="110,252,0,0" VerticalAlignment="Top"/>
         <Label Content="SL" HorizontalAlignment="Left" Margin="204,314,0,0" VerticalAlignment="Top" Height="24"/>
         <Label Content="TP" HorizontalAlignment="Left" Margin="110,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <ListView Margin="296,49,449,10" x:Name="HistoryList" SelectionChanged="HistoryList_SelectionChanged" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+        <ListView Margin="296,21,449,10" x:Name="HistoryList" SelectionChanged="HistoryList_SelectionChanged" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Sumbol}" Width="100" Header="Sumbol"/>
@@ -69,9 +69,6 @@
             </ListView.View>
         </ListView>
         <Label Content="Start" HorizontalAlignment="Left" Margin="26,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="305,21,0,0" VerticalAlignment="Top" Width="76"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="398,21,0,0" VerticalAlignment="Top" Width="76"/>
-
 
     </Grid>
 </Window>

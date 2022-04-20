@@ -25,120 +25,50 @@ namespace BinanceAlgorithm
         {
             DataContext = new Candlestick();
             InitializeComponent();
+            MouseWheel += WindowChart_MouseWheel;
+        }
+
+        private void WindowChart_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if(Chart.Width >= 1300 && Chart.Width <= 3500)
+            {
+                double width = Chart.Width;
+                if(width - e.Delta <= 3500 && width - e.Delta >= 1300) Chart.Width = width - e.Delta;
+            }
         }
 
         public class Candlestick
         {
-            private const int PriceCount = 500;
-            private const int PricesPerCandle = 10;
 
-            public List<Price> Prices { get; } = new List<Price>(PriceCount + 1);
-            public List<Candle> Candles { get; } = new List<Candle>(PriceCount / PricesPerCandle);
+            public List<Candle> Candles { get; } = new List<Candle>();
             public List<double> Labels { get; } = new List<double>();
-            public double PriceCurrent { get; }
-            public double PriceMin { get; }
-            public double PriceMax { get; }
-            public double PriceHeight { get; }
+            public double PriceCurrent { get; }                             // цена монеты сейчас
+            public double PriceHeight { get; }                              // координаты центра графика +110
+
+            public class Candle
+            {
+                public double Date { get; set; }                            // расстояние между свечами
+                public double Min { get; set; }                             // координата низ тени
+                public double Height { get; set; }                          // высота тени свечи
+                public double DeltaMin { get; set; }                        // координата низ свечи
+                public double DeltaHeight { get; set; }                     // высота свечи
+                public bool IsPositive { get; set; }                        // цвет свечи
+            }
 
             public Candlestick() {
-                Prices.Add(new Price() { Date = DateTime.Now, Value = 100 });
-                Candles.Add(new Candle() { 
-                    Date = 0               // расстояние между свечами
-                    , Min = 290             // координата низ тени
-                    , Max = 1               // 
-                    , DeltaMax = 1          // 
-                    , DeltaMin = 300        // координата низ свечи
-                    , DeltaHeight = 10      // высота свечи
-                    , Height = 70           // высота тени свечи
-                    , IsPositive = true    // цвет свечи
-                });
-                Candles.Add(new Candle()
-                {
-                    Date = 10             // расстояние между свечами
-                    ,
-                    Min = 290             // координата низ тени
-                    ,
-                    Max = 1               // 
-                    ,
-                    DeltaMax = 1          //
-                    ,
-                    DeltaMin = 300        // координата низ свечи
-                    ,
-                    DeltaHeight = 10      // высота свечи
-                    ,
-                    Height = 70           // высота тени свечи
-                    ,
-                    IsPositive = true     // цвет свечи
-                });
+                
+                Labels.Add(0);
+                Labels.Add(50);
+                Labels.Add(100);
+                Labels.Add(150);
                 Labels.Add(200);
                 Labels.Add(250);
                 Labels.Add(300);
                 Labels.Add(350);
-                Labels.Add(400);
-                PriceCurrent = 310;         // цена монеты сейчас
-                PriceMin = 0;
-                PriceMax = 0;
-                PriceHeight = 300+110;          // координаты центра графика +110
             }
-            //public Candlestick()
-            //{
-            //    var rnd = new Random(2);
-            //    var today = DateTime.Today;
-            //    var date = DateTime.Today;
-            //    var value = 300;
-            //    for (var i = 0; i < Prices.Capacity; i++)
-            //        Prices.Add(new Price { Date = date = date.AddMinutes(5), Value = value += rnd.Next(-9, 10) });
-            //    for (var i = 0; i < Candles.Capacity; i++)
-            //    {
-            //        var prices = Prices.Select(p => p.Value).Skip(i * PricesPerCandle).Take(PricesPerCandle + 1);
-            //        Candles.Add(new Candle
-            //        {
-            //            Date = (Prices[i * PricesPerCandle].Date - today).TotalMinutes / 5,
-            //            Min = prices.Min(),
-            //            Max = prices.Max(),
-            //            Height = prices.Max() - prices.Min(),
-            //            DeltaMin = prices.First(),
-            //            DeltaMax = prices.Last(),
-            //            DeltaHeight = Abs(prices.Last() - prices.First()),
-            //            IsPositive = prices.First() < prices.Last(),
-            //        });
-            //    }
-            //    Candles.ForEach(c => c.Fix());
-            //    PriceCurrent = Prices.Last().Value;
-            //    PriceMin = Prices.Min(p => p.Value) - 20;
-            //    PriceMax = Prices.Max(p => p.Value) + 20;
-            //    PriceHeight = PriceMax - PriceMin - 40;
-            //    for (double price = Round(PriceMin / 10) * 10; price < PriceMax; price += 50)
-            //        Labels.Add(price);
-            //}
+            
         }
 
-        public class Price
-        {
-            public DateTime Date { get; set; }
-            public double Value { get; set; }
-        }
 
-        public class Candle
-        {
-            public double Date { get; set; }
-            public double Min { get; set; }
-            public double Max { get; set; }
-            public double Height { get; set; }
-            public double DeltaMin { get; set; }
-            public double DeltaMax { get; set; }
-            public double DeltaHeight { get; set; }
-            public bool IsPositive { get; set; }
-
-            //public void Fix()
-            //{
-            //    if (!IsPositive)
-            //    {
-            //        var min = DeltaMin;
-            //        DeltaMin = DeltaMax;
-            //        DeltaMax = min;
-            //    }
-            //}
-        }
     }
 }

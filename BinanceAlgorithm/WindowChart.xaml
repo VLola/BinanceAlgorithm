@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:my="clr-namespace:BinanceAlgorithm"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Height="400" Width="650" Background="DarkSlateBlue" mc:Ignorable="d">
+        Height="400" Width="1400" Background="DarkSlateBlue" mc:Ignorable="d">
     <Control.Resources>
         <ScaleTransform x:Key="trfFlip" ScaleY="-1" />
         <ItemsPanelTemplate x:Key="tplCanvas">
@@ -19,21 +19,27 @@
             <Setter Property="ItemsPanel" Value="{StaticResource tplCanvas}" />
         </Style>
         <Style TargetType="Canvas" BasedOn="{StaticResource styFlipContainer}"/>
+        <!--Стиль цен линий -->
         <DataTemplate x:Key="tplLabel" DataType="sys:Double">
             <TextBlock Text="{Binding ., StringFormat=0.0}" Margin="0 8 0 -8" Foreground="DarkGray" RenderTransform="{StaticResource trfFlip}" />
         </DataTemplate>
+        <!--Центральный контейнер -->
         <Style x:Key="styLabel" TargetType="ContentPresenter">
             <Setter Property="Canvas.Top" Value="{Binding}" />
         </Style>
+        <!--Левый контейнер -->
         <Style x:Key="styLabelLeft" TargetType="ContentPresenter" BasedOn="{StaticResource styLabel}">
             <Setter Property="Canvas.Right" Value="10" />
         </Style>
+        <!--Правый контейнер -->
         <Style x:Key="styLabelRight" TargetType="ContentPresenter" BasedOn="{StaticResource styLabel}">
             <Setter Property="Canvas.Left" Value="10" />
         </Style>
+        <!-- 5 линий -->
         <DataTemplate x:Key="tplLineHorizontal" DataType="sys:Double">
-            <Rectangle Stroke="Gray" StrokeDashArray="4 8" StrokeThickness="1" Width="500" Height="1" />
+            <Rectangle Stroke="Gray" StrokeDashArray="4 8" StrokeThickness="1" Width="3400" Height="1" />
         </DataTemplate>
+        <!-- Цвет свечи -->
         <Style x:Key="styCandle" TargetType="Shape">
             <Setter Property="Stroke" Value="OrangeRed" />
             <Setter Property="Fill" Value="DarkRed" />
@@ -44,40 +50,49 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <!-- Тень свечи -->
         <DataTemplate x:Key="tplCandleLine" DataType="my:Candle">
             <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding Height}" />
         </DataTemplate>
         <Style x:Key="styCandleLine" TargetType="ContentPresenter">
+            <!--начальная координата свечи по оси X -->
             <Setter Property="Canvas.Left" Value="{Binding Date}" />
+            <!--координата низ тени -->
             <Setter Property="Canvas.Top" Value="{Binding Min}" />
         </Style>
+        <!-- Тело свечи -->
         <DataTemplate x:Key="tplCandleRect" DataType="my:Candle">
             <Rectangle Style="{StaticResource styCandle}" Width="6" Height="{Binding DeltaHeight}" Margin="-2 0 2 0" />
         </DataTemplate>
         <Style x:Key="styCandleRect" TargetType="ContentPresenter">
-            <Setter Property="Canvas.Left" Value="{Binding Date}" />
-            <Setter Property="Canvas.Top" Value="{Binding DeltaMin}" />
+            <!--начальная координата свечи по оси X -->
+            <Setter Property="Canvas.Left" Value="{Binding Date}"/>
+            <!--координата низ свечи -->
+            <Setter Property="Canvas.Top" Value="{Binding DeltaMin}"/>
         </Style>
     </Control.Resources>
-    <Grid Height="{Binding PriceHeight}" Margin="0 70 0 -70">
+    <Grid x:Name="Chart" Width="3500" HorizontalAlignment="Right" >
+        <!--Отступы между ценами-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
-            <ColumnDefinition Width="500" />
+            <ColumnDefinition Width="3400" />
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
-        <ItemsControl Grid.Column="0" ItemsSource="{Binding Labels}"
-                ItemTemplate="{StaticResource tplLabel}" ItemContainerStyle="{StaticResource styLabelLeft}" />
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Labels}"
-                ItemTemplate="{StaticResource tplLineHorizontal}" ItemContainerStyle="{StaticResource styLabel}" />
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}"
-                ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}"
-                ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
-        <ItemsControl Grid.Column="2" ItemsSource="{Binding Labels}"
-                ItemTemplate="{StaticResource tplLabel}" ItemContainerStyle="{StaticResource styLabelRight}" />
+        <!--Цены линий слева -->
+        <ItemsControl Grid.Column="0" ItemsSource="{Binding Labels}" ItemTemplate="{StaticResource tplLabel}" ItemContainerStyle="{StaticResource styLabelLeft}" />
+        <!--Тень свечи-->
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Labels}" ItemTemplate="{StaticResource tplLineHorizontal}" ItemContainerStyle="{StaticResource styLabel}" />
+        <!--Тень свечи-->
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
+        <!--Тело свечи-->
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
+        <!--Цены линий справа -->
+        <ItemsControl Grid.Column="2" ItemsSource="{Binding Labels}" ItemTemplate="{StaticResource tplLabel}" ItemContainerStyle="{StaticResource styLabelRight}" />
+        <!--Линия актуальной цены монеты -->
         <Canvas Grid.Column="1">
-            <Rectangle Canvas.Top="{Binding PriceCurrent}" Stroke="LightGray" Width="500" Height="2" />
+            <Rectangle Canvas.Top="{Binding PriceCurrent}" Stroke="LightGray" Width="3400" Height="2" />
         </Canvas>
+        <!--Актуальная цена монеты -->
         <Canvas Grid.Column="2">
             <Border Canvas.Top="{Binding PriceCurrent}" Margin="6 10 0 -10"
                     Background="LightGray" CornerRadius="3" RenderTransform="{StaticResource trfFlip}">

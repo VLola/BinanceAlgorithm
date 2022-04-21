@@ -21,53 +21,69 @@ namespace BinanceAlgorithm
     /// </summary>
     public partial class WindowChart
     {
+        public double x_old;
+        public double y_old;
+        public double scale;
         public WindowChart(ListKlines list)
         {
             DataContext = new Candlestick(list);
             InitializeComponent();
             MouseWheel += WindowChart_MouseWheel;
+            MouseMove += WindowChart_MouseMove;
+
+        }
+
+        private void WindowChart_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                double x = 0;
+                double y = 0;
+                if (e.GetPosition(this).X - x_old > 0) x = -10;
+                else if (e.GetPosition(this).X - x_old < 0) x = 10;
+                if (e.GetPosition(this).Y - y_old > 0) y = -10;
+                else if (e.GetPosition(this).Y - y_old < 0) y = 10;
+
+                if (x_old != 0)
+                {
+                    double width = Chart1.Width;
+                    if (Chart1.Width + x >= 1300 && Chart1.Width + x <= 3500) Chart1.Width = width + x;
+                }
+
+                if (y_old != 0)
+                {
+                    //double heigth = Chart1.Height;
+                    //Chart1.Height = heigth + y;
+                    double heigth = Chart1.Height;
+                    if (Chart1.Height + y >= 300 && Chart1.Height + y <= 1700) Chart1.Height = heigth + y;
+                    else Chart1.Height = heigth - y;
+                }
+            }
+            x_old = e.GetPosition(this).X;
+            y_old = e.GetPosition(this).Y;
         }
 
         private void WindowChart_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if(Chart.Width >= 1300 && Chart.Width <= 3500)
-            {
-                double width = Chart.Width;
-                if(width - e.Delta <= 3500 && width - e.Delta >= 1300) Chart.Width = width - e.Delta;
-            }
+            if(player1Scale.ScaleY + Convert.ToDouble(e.Delta) / 2000 > 0) player1Scale.ScaleY = player1Scale.ScaleY + Convert.ToDouble(e.Delta) / 2000;
         }
 
         public class Candlestick
         {
-            public decimal mul;
             public List<Candle> Candles { get; } = new List<Candle>();
-            public List<double> Labels { get; } = new List<double>();
-            public double PriceCurrent { get; }                             // цена монеты сейчас
 
             public class Candle
             {
                 public double Date { get; set; }                            // расстояние между свечами
-                public decimal Low { get; set; }                             // координата низ тени
-                public decimal High { get; set; }                          // высота тени свечи
-                public decimal Open { get; set; }                        // координата низ свечи
-                public decimal Close { get; set; }                     // высота свечи
+                public decimal Low { get; set; }                            // координата низ тени
+                public decimal High { get; set; }                           // высота тени свечи
+                public decimal Open { get; set; }                           // координата низ свечи
+                public decimal Close { get; set; }                          // высота свечи
                 public bool IsPositive { get; set; }                        // цвет свечи
             }
 
             public Candlestick(ListKlines list) {
-                
-                Labels.Add(0);
-                Labels.Add(50);
-                Labels.Add(100);
-                Labels.Add(150);
-                Labels.Add(200);
-                Labels.Add(250);
-                Labels.Add(300);
-                Labels.Add(350);
-                Labels.Add(400);
 
-                //PriceCurrent = Convert.ToDouble(list.listKlines[0].Close);
-                PriceCurrent = 0;
                 decimal Max = 0m;
                 foreach (var it in list.listKlines)
                 {
@@ -80,8 +96,8 @@ namespace BinanceAlgorithm
                 }
 
 
-                mul = 100m / Max;
-                decimal X = 100m;
+                decimal mul = 100m / Max;
+                decimal X = 200m;
                 decimal minus = 97m;
 
                 int date = 0;
@@ -125,11 +141,7 @@ namespace BinanceAlgorithm
 
                     Candles.Insert(0, candle);
                 }
-
             }
-
         }
-
-
     }
 }

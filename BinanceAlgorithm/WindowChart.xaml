@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:my="clr-namespace:BinanceAlgorithm"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Height="400" Width="1400" Background="DarkSlateBlue" mc:Ignorable="d">
+        Height="450" Width="1400" Background="DarkSlateBlue" mc:Ignorable="d">
     <Control.Resources>
-        <ScaleTransform x:Key="trfFlip" ScaleY="-1" />
+        <ScaleTransform x:Key="trfFlip" ScaleY="-1" ScaleX="1" />
         <ItemsPanelTemplate x:Key="tplCanvas">
             <Canvas />
         </ItemsPanelTemplate>
@@ -52,26 +52,26 @@
         </Style>
         <!-- Тень свечи -->
         <DataTemplate x:Key="tplCandleLine" DataType="my:Candle">
-            <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding Height}" />
+            <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding High}" />
         </DataTemplate>
         <Style x:Key="styCandleLine" TargetType="ContentPresenter">
             <!--начальная координата свечи по оси X -->
             <Setter Property="Canvas.Left" Value="{Binding Date}" />
             <!--координата низ тени -->
-            <Setter Property="Canvas.Top" Value="{Binding Min}" />
+            <Setter Property="Canvas.Top" Value="{Binding Low}" />
         </Style>
         <!-- Тело свечи -->
         <DataTemplate x:Key="tplCandleRect" DataType="my:Candle">
-            <Rectangle Style="{StaticResource styCandle}" Width="6" Height="{Binding DeltaHeight}" Margin="-2 0 2 0" />
+            <Rectangle Style="{StaticResource styCandle}" Width="6" Height="{Binding Close}" Margin="-2 0 2 0" />
         </DataTemplate>
         <Style x:Key="styCandleRect" TargetType="ContentPresenter">
             <!--начальная координата свечи по оси X -->
             <Setter Property="Canvas.Left" Value="{Binding Date}"/>
             <!--координата низ свечи -->
-            <Setter Property="Canvas.Top" Value="{Binding DeltaMin}"/>
+            <Setter Property="Canvas.Top" Value="{Binding Open}"/>
         </Style>
     </Control.Resources>
-    <Grid x:Name="Chart" Width="3500" HorizontalAlignment="Right" >
+    <Grid x:Name="Chart" Width="3500" HorizontalAlignment="Right" Height="350">
         <!--Отступы между ценами-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
@@ -100,4 +100,5 @@
             </Border>
         </Canvas>
     </Grid>
+    
 </Window>

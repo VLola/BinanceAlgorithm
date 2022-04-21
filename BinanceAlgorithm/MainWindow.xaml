@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BinanceAlgorithm"
         mc:Ignorable="d"
-        Title="MainWindow" Height="509.768" Width="1450.524">
+        Title="MainWindow" Height="850" Width="1450">
     <Grid Margin="0,0,2,17">
-        <TextBox x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,9" TextWrapping="Wrap" Width="410"/>
+        <TextBox x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,0" TextWrapping="Wrap" Width="410" Height="97" VerticalAlignment="Top"/>
         <Button Content="Clear errors" HorizontalAlignment="Right" Margin="0,225,343,0" Width="74" Click="Button_ClearErrors" Height="20" VerticalAlignment="Top"/>
         <ComboBox x:Name="cmbTest1" ItemsSource="{Binding cmbContentFileNames}" HorizontalAlignment="Right" Margin="0,18,87,0" VerticalAlignment="Top" Width="344" Height="22"/>
         <Button Content="Refile" HorizontalAlignment="Right" Margin="0,124,343,0" Width="76" Click="Button_Click_1" Height="20" VerticalAlignment="Top"/>
@@ -53,7 +53,7 @@
         <Label Content="Short period" HorizontalAlignment="Left" Margin="110,252,0,0" VerticalAlignment="Top"/>
         <Label Content="SL" HorizontalAlignment="Left" Margin="204,314,0,0" VerticalAlignment="Top" Height="24"/>
         <Label Content="TP" HorizontalAlignment="Left" Margin="110,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <ListView Margin="296,21,449,10" x:Name="HistoryList" SelectionChanged="HistoryList_SelectionChanged" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+        <ListView Margin="296,21,449,0" x:Name="HistoryList" MouseLeftButtonUp="listView_Click" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" Height="331" VerticalAlignment="Top">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Sumbol}" Width="100" Header="Sumbol"/>

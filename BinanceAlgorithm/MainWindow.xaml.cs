@@ -25,8 +25,11 @@ namespace BinanceAlgorithm
         public GridViewColumnHeader _lastHeaderClicked = null;
         public ListSortDirection _lastDirection = ListSortDirection.Descending;
         public ICollectionView dataView;
+
+        public List<History> history = new List<History>();
         public MainWindow()
         {
+
             InitializeComponent();
             ErrorWatcher();
             FilesList();
@@ -429,7 +432,6 @@ namespace BinanceAlgorithm
 
         #region - Ema Compare -
 
-        public List<History> history = new List<History>();
         private void EmaCompare(int compare_1, int compare_2)
         {
             try
@@ -543,10 +545,24 @@ namespace BinanceAlgorithm
         #endregion
 
         #region - Load Candlestick -
-        private void HistoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void listView_Click(object sender, RoutedEventArgs e)
         {
-            WindowChart new_chart = new WindowChart();
-            new_chart.ShowDialog();
+            string path = System.IO.Path.Combine(Environment.CurrentDirectory, "");
+            string json = File.ReadAllText(path + @"\times\" + cmbTest1.Text + ".txt");
+            var list = JsonConvert.DeserializeObject<List<ListKlines>>(json);
+
+            History item = (History)(sender as ListView).SelectedItem;
+            if (item != null)
+            {
+                foreach(var it in list)
+                {
+                    if(item.Sumbol == it.symbol)
+                    {
+                        WindowChart new_chart = new WindowChart(it);
+                        new_chart.ShowDialog();
+                    }
+                }
+            }
         }
         #endregion
 

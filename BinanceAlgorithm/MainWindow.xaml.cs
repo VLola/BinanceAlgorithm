@@ -12,6 +12,7 @@ using BinanceAlgorithm.Resourses.EmaResourses;
 using System.Data;
 using System.Windows.Data;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace BinanceAlgorithm
 {
@@ -25,22 +26,27 @@ namespace BinanceAlgorithm
         public GridViewColumnHeader _lastHeaderClicked = null;
         public ListSortDirection _lastDirection = ListSortDirection.Descending;
         public ICollectionView dataView;
-
+        public double x_old;
+        public double y_old;
+        public double scale;
         public List<History> history = new List<History>();
         public MainWindow()
         {
-
             InitializeComponent();
             ErrorWatcher();
             FilesList();
-            Clients(); 
-            Exit.Visibility = Visibility.Hidden; 
+            Clients();
+            Exit.Visibility = Visibility.Hidden;
             LoadButtonsCompare();
             HistoryList.ItemsSource = history;
             dataView = CollectionViewSource.GetDefaultView(HistoryList.ItemsSource);
             order_open.Text = "0,5";
             order_sl.Text = "0,1";
             order_tp.Text = "0,1";
+
+
+            MouseWheel += WindowChart_MouseWheel;
+            MouseMove += WindowChart_MouseMove;
         }
 
         #region - Login -
@@ -253,7 +259,7 @@ namespace BinanceAlgorithm
         {
             StartHistoryFile();
         }
-        
+
         // ------------------------------------------------------- End History File -------------------------------------------------
         #endregion
 
@@ -373,7 +379,7 @@ namespace BinanceAlgorithm
                         for (int i = 0; i < size; i++)
                         {
                             decimal sum = 0m;
-                            if(size - i > period)
+                            if (size - i > period)
                             {                                                                                                                   // Изменено условие
                                 for (int j = 0; j < period; j++)
                                 {
@@ -392,7 +398,7 @@ namespace BinanceAlgorithm
                                 list_average.Add(sum / size - i);
                             }
 
-                            
+
                         }
                         ListEma ema = new ListEma(symbol_ema, list_average);
                         list_ema.Add(ema);
@@ -429,7 +435,7 @@ namespace BinanceAlgorithm
             {
                 ErrorText.Add($"LoadButtonsCompare {e.Message}");
             }
-            
+
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -460,7 +466,7 @@ namespace BinanceAlgorithm
                 var list_ema1 = JsonConvert.DeserializeObject<ObjectListEma>(json1);
                 var list_ema2 = JsonConvert.DeserializeObject<ObjectListEma>(json2);
                 //-------------------------------------------------------------------------------------
-                List<ListEma> list_result = new List<ListEma>(); 
+                List<ListEma> list_result = new List<ListEma>();
                 for (int i = 0; i < list_ema1.Ema.Count; i++)
                 {
                     string sumbol = list_ema1.Ema[i].Sumbol;
@@ -481,7 +487,7 @@ namespace BinanceAlgorithm
                 decimal start = Convert.ToDecimal(order_open.Text);
                 decimal tp = Convert.ToDecimal(order_tp.Text);
                 decimal sl = Convert.ToDecimal(order_sl.Text);
-                foreach(var it in list_result)
+                foreach (var it in list_result)
                 {
                     int long_bet = 0;
                     int short_bet = 0;
@@ -490,7 +496,7 @@ namespace BinanceAlgorithm
                     int long_loss = 0;
                     int short_loss = 0;
                     string sumbol = it.Sumbol;
-                    for (int i = 0; i < it.list.Count; i++ )
+                    for (int i = 0; i < it.list.Count; i++)
                     {
                         if (it.list[i] > start)
                         {
@@ -513,7 +519,7 @@ namespace BinanceAlgorithm
                                 }
                             }
                         }
-                        else if(it.list[i] < -start)
+                        else if (it.list[i] < -start)
                         {
                             decimal bet = it.list[i];
                             for (int j = i; j < it.list.Count; j++)
@@ -582,8 +588,7 @@ namespace BinanceAlgorithm
                             var list_ema1 = JsonConvert.DeserializeObject<ObjectListEma>(json1);
                             var list_ema2 = JsonConvert.DeserializeObject<ObjectListEma>(json2);
 
-                            WindowChart new_chart = new WindowChart(it, list_ema1.Ema[count].list, list_ema2.Ema[count].list);
-                            new_chart.ShowDialog();
+                            Chart1.DataContext = new Candlestick(it, list_ema1.Ema[count].list, list_ema2.Ema[count].list);
                         }
                         count++;
                     }
@@ -593,7 +598,7 @@ namespace BinanceAlgorithm
             {
                 ErrorText.Add(c.Message);
             }
-            
+
         }
         #endregion
 
@@ -659,5 +664,39 @@ namespace BinanceAlgorithm
             dataView.Refresh();
         }
         #endregion
+
+        
+        private void WindowChart_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                double x = 0;
+                if (e.GetPosition(this).X - x_old > 0) x = 20;
+                else if (e.GetPosition(this).X - x_old < 0) x = -20;
+                if (x_old != 0)
+                {
+                    double width = Chart1.Width;
+                    //if (Chart1.Width + x >= 1300 && Chart1.Width + x <= 3500)
+                    Chart1.Width = width + x;
+                }
+
+                //double y = 0;
+                //if (e.GetPosition(this).Y - y_old > 0) y = -10;
+                //else if (e.GetPosition(this).Y - y_old < 0) y = 10;
+                //if (y_old != 0)
+                //{
+                //    double heigth = Chart1.Height;
+                //    if (Chart1.Height + y >= 300 && Chart1.Height + y <= 1700) Chart1.Height = heigth + y;
+                //    else Chart1.Height = heigth - y;
+                //}
+            }
+            x_old = e.GetPosition(this).X;
+            y_old = e.GetPosition(this).Y;
+        }
+
+        private void WindowChart_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (player1Scale.ScaleY + Convert.ToDouble(e.Delta) / 2000 > 0) player1Scale.ScaleY = player1Scale.ScaleY + Convert.ToDouble(e.Delta) / 2000;
+        }
     }
 }

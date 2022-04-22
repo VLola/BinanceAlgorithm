@@ -71,6 +71,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Resourses\boxList.cs" />
+    <Compile Include="Resourses\Candlestick.cs" />
     <Compile Include="Resourses\Client.cs" />
     <Compile Include="Resourses\ClientList.cs" />
     <Compile Include="Resourses\EmaResourses\EmaCompare\ColumnTableEma.cs" />
@@ -83,9 +84,6 @@
     <Compile Include="Resourses\EmaResourses\ListEma.cs" />
     <Compile Include="Resourses\ListKlines.cs" />
     <Compile Include="Resourses\Socket.cs" />
-    <Compile Include="WindowChart.xaml.cs">
-      <DependentUpon>WindowChart.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -98,10 +96,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WindowChart.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

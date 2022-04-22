@@ -4,57 +4,114 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BinanceAlgorithm"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="850" Width="1450">
+        Title="MainWindow" Height="850" Width="1450"
+        Background="#FF3C3C3C" Foreground="White">
+    <Window.Resources>
+        <ScaleTransform x:Key="trfFlip" ScaleY="-1" ScaleX="-1" />
+        <ItemsPanelTemplate x:Key="tplCanvas">
+            <Canvas />
+        </ItemsPanelTemplate>
+        <Style x:Key="styFlipContainer" TargetType="FrameworkElement">
+            <Setter Property="RenderTransformOrigin" Value=".5 .5" />
+            <Setter Property="RenderTransform" Value="{StaticResource trfFlip}" />
+        </Style>
+        <Style TargetType="ItemsControl" BasedOn="{StaticResource styFlipContainer}">
+            <Setter Property="ItemsPanel" Value="{StaticResource tplCanvas}" />
+        </Style>
+        <Style TargetType="Canvas" BasedOn="{StaticResource styFlipContainer}"/>
+
+
+        <!-- Цвет свечи -->
+        <Style x:Key="styCandle" TargetType="Shape">
+            <Setter Property="Stroke" Value="OrangeRed" />
+            <Setter Property="Fill" Value="DarkRed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPositive}" Value="True">
+                    <Setter Property="Stroke" Value="LawnGreen" />
+                    <Setter Property="Fill" Value="ForestGreen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Тень свечи -->
+        <DataTemplate x:Key="tplCandleLine" DataType="my:Candle">
+            <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding High}" />
+        </DataTemplate>
+        <Style x:Key="styCandleLine" TargetType="ContentPresenter">
+            <!--начальная координата свечи по оси X -->
+            <Setter Property="Canvas.Left" Value="{Binding Date}" />
+            <!--координата низ тени -->
+            <Setter Property="Canvas.Top" Value="{Binding Low}" />
+        </Style>
+        <!-- Тело свечи -->
+        <DataTemplate x:Key="tplCandleRect" DataType="my:Candle">
+            <Rectangle Style="{StaticResource styCandle}" Width="6" Height="{Binding Close}" Margin="-2 0 2 0" />
+        </DataTemplate>
+        <Style x:Key="styCandleRect" TargetType="ContentPresenter">
+            <!--начальная координата свечи по оси X -->
+            <Setter Property="Canvas.Left" Value="{Binding Date}"/>
+            <!--координата низ свечи -->
+            <Setter Property="Canvas.Top" Value="{Binding Open}"/>
+        </Style>
+        <!-- 5 линий -->
+        <DataTemplate x:Key="tplLineHorizontal" DataType="sys:Double">
+            <Rectangle Stroke="Gray" StrokeDashArray="4 8" StrokeThickness="1" Width="3400" Height="1" />
+        </DataTemplate>
+        <Style x:Key="styLabel" TargetType="ContentPresenter">
+            <Setter Property="Canvas.Top" Value="{Binding}" />
+        </Style>
+    </Window.Resources>
     <Grid Margin="0,0,2,17">
-        <TextBox x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,0" TextWrapping="Wrap" Width="410" Height="97" VerticalAlignment="Top"/>
-        <Button Content="Clear errors" HorizontalAlignment="Right" Margin="0,225,343,0" Width="74" Click="Button_ClearErrors" Height="20" VerticalAlignment="Top"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,0" TextWrapping="Wrap" Width="410" Height="97" VerticalAlignment="Top"/>
+        <Button Background="#FF3C3C3C" Foreground="White" Content="Clear errors" HorizontalAlignment="Right" Margin="0,225,343,0" Width="74" Click="Button_ClearErrors" Height="20" VerticalAlignment="Top"/>
         <ComboBox x:Name="cmbTest1" ItemsSource="{Binding cmbContentFileNames}" HorizontalAlignment="Right" Margin="0,18,87,0" VerticalAlignment="Top" Width="344" Height="22"/>
-        <Button Content="Refile" HorizontalAlignment="Right" Margin="0,124,343,0" Width="76" Click="Button_Click_1" Height="20" VerticalAlignment="Top"/>
-        <Label Content="Klines:" HorizontalAlignment="Right" Margin="0,62,293,0" Width="60" Height="26" VerticalAlignment="Top"/>
-        <Label Content="-" Margin="0,63,233,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="16"/>
-        <TextBox Text="0" x:Name="klines_start" HorizontalAlignment="Right" Margin="0,66,255,0" TextWrapping="Wrap" Width="32" TextChanged="klines_start_TextChanged"  PreviewTextInput="digit_PreviewTextInput" Height="20" VerticalAlignment="Top"/>
-        <TextBox Text="499" x:Name="klines_end" HorizontalAlignment="Right" Margin="0,66,195,0" TextWrapping="Wrap" Width="32" TextChanged="klines_end_TextChanged"  PreviewTextInput="digit_PreviewTextInput" Height="20" VerticalAlignment="Top"/>
-        <Label Content="Start time:" HorizontalAlignment="Right" Margin="0,183,187,0" VerticalAlignment="Top" Height="26" Width="70"/>
-        <DatePicker x:Name="data_picker" Margin="0,144,67,0" VerticalAlignment="Top" Height="24" RenderTransformOrigin="0.33,0.625" HorizontalAlignment="Right" Width="100"/>
-        <Label Content="Date:" Margin="0,147,197,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.15,1.385" HorizontalAlignment="Right" Width="60"/>
-        <Label Content=":" Margin="0,186,113,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="16"/>
-        <TextBox Text="0" x:Name="start_time_h" HorizontalAlignment="Right" Margin="0,189,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
-        <TextBox Text="0" x:Name="start_time_m" Margin="0,189,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
-        <CheckBox IsChecked="True" x:Name="current_time" Content="Current time" Margin="0,124,170,0" Height="15" VerticalAlignment="Top" HorizontalAlignment="Right" Width="87"/>
-        <Label Content="End time:" HorizontalAlignment="Right" Margin="0,219,187,0" VerticalAlignment="Top" Height="26" Width="70"/>
-        <Label Content=":" Margin="1233,222,113,0" VerticalAlignment="Top" Height="26"/>
-        <TextBox Text="0" x:Name="end_time_h" HorizontalAlignment="Right" Margin="0,225,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
-        <TextBox Text="0" x:Name="end_time_m" Margin="0,225,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
-        <RadioButton x:Name="StartTime" GroupName="StartEndTime" Margin="0,189,272,0" VerticalAlignment="Top" Height="14" HorizontalAlignment="Right" Width="15">
+        <Button Background="#FF3C3C3C" Foreground="White" Content="Refile" HorizontalAlignment="Right" Margin="0,124,343,0" Width="76" Click="Button_Click_1" Height="20" VerticalAlignment="Top"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Klines:" HorizontalAlignment="Right" Margin="0,62,293,0" Width="60" Height="26" VerticalAlignment="Top"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="-" Margin="0,63,233,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="16"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" Text="0" x:Name="klines_start" HorizontalAlignment="Right" Margin="0,66,255,0" TextWrapping="Wrap" Width="32" TextChanged="klines_start_TextChanged"  PreviewTextInput="digit_PreviewTextInput" Height="20" VerticalAlignment="Top"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" Text="499" x:Name="klines_end" HorizontalAlignment="Right" Margin="0,66,195,0" TextWrapping="Wrap" Width="32" TextChanged="klines_end_TextChanged"  PreviewTextInput="digit_PreviewTextInput" Height="20" VerticalAlignment="Top"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Start time:" HorizontalAlignment="Right" Margin="0,183,187,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <DatePicker Background="#FF3C3C3C" Foreground="White" x:Name="data_picker" Margin="0,144,67,0" VerticalAlignment="Top" Height="24" RenderTransformOrigin="0.33,0.625" HorizontalAlignment="Right" Width="100"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Date:" Margin="0,147,197,0" VerticalAlignment="Top" Height="26" RenderTransformOrigin="0.15,1.385" HorizontalAlignment="Right" Width="60"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content=":" Margin="0,186,113,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="16"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" Text="0" x:Name="start_time_h" HorizontalAlignment="Right" Margin="0,189,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" Text="0" x:Name="start_time_m" Margin="0,189,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
+        <CheckBox Background="#FF3C3C3C" Foreground="White" IsChecked="True" x:Name="current_time" Content="Current time" Margin="0,124,170,0" Height="15" VerticalAlignment="Top" HorizontalAlignment="Right" Width="87"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="End time:" HorizontalAlignment="Right" Margin="0,219,187,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content=":" Margin="1233,222,113,0" VerticalAlignment="Top" Height="26"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" Text="0" x:Name="end_time_h" HorizontalAlignment="Right" Margin="0,225,135,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32" Height="20" PreviewTextInput="digit_PreviewTextInput"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" Text="0" x:Name="end_time_m" Margin="0,225,75,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" PreviewTextInput="digit_PreviewTextInput" HorizontalAlignment="Right" Width="32"/>
+        <RadioButton Background="#FF3C3C3C" Foreground="White" x:Name="StartTime" GroupName="StartEndTime" Margin="0,189,272,0" VerticalAlignment="Top" Height="14" HorizontalAlignment="Right" Width="15">
             <WrapPanel Height="100" Width="100"/>
         </RadioButton>
-        <RadioButton x:Name="EndTime" GroupName="StartEndTime" IsChecked="True" Margin="0,225,272,0" VerticalAlignment="Top" Height="14" HorizontalAlignment="Right" Width="15"/>
-        <TextBox x:Name="api_key" HorizontalAlignment="Left" Height="23" Margin="110,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
-        <TextBox x:Name="secret_key" HorizontalAlignment="Left" Height="23" Margin="110,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" RenderTransformOrigin="1.207,0.696"/>
-        <Button x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="204,153,0,0" VerticalAlignment="Top" Width="74" Click="Button_Login" Height="20" />
-        <Label x:Name="label1" Content="Api Key:" HorizontalAlignment="Left" Margin="26,18,0,0" VerticalAlignment="Top" Height="26" Width="52"/>
-        <Label x:Name="label2" Content="Secret Key:" HorizontalAlignment="Left" Margin="26,49,0,0" VerticalAlignment="Top" Height="26" Width="67"/>
-        <Label x:Name="label3" Content="Name:" HorizontalAlignment="Left" Margin="26,80,0,0" VerticalAlignment="Top" Height="26" Width="44"/>
-        <TextBox x:Name="client_name" HorizontalAlignment="Left" Height="23" Margin="110,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
-        <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="110,153,0,0" VerticalAlignment="Top" Width="76" Click="Button_Save" RenderTransformOrigin="0.803,0.55" Height="20" />
+        <RadioButton Background="#FF3C3C3C" Foreground="White" x:Name="EndTime" GroupName="StartEndTime" IsChecked="True" Margin="0,225,272,0" VerticalAlignment="Top" Height="14" HorizontalAlignment="Right" Width="15"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="api_key" HorizontalAlignment="Left" Height="23" Margin="110,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="secret_key" HorizontalAlignment="Left" Height="23" Margin="110,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" RenderTransformOrigin="1.207,0.696"/>
+        <Button Background="#FF3C3C3C" Foreground="White" x:Name="Login" Content="Login" HorizontalAlignment="Left" Margin="204,153,0,0" VerticalAlignment="Top" Width="74" Click="Button_Login" Height="20" />
+        <Label Background="#FF3C3C3C" Foreground="White" x:Name="label1" Content="Api Key:" HorizontalAlignment="Left" Margin="26,18,0,0" VerticalAlignment="Top" Height="26" Width="52"/>
+        <Label Background="#FF3C3C3C" Foreground="White" x:Name="label2" Content="Secret Key:" HorizontalAlignment="Left" Margin="26,49,0,0" VerticalAlignment="Top" Height="26" Width="67"/>
+        <Label Background="#FF3C3C3C" Foreground="White" x:Name="label3" Content="Name:" HorizontalAlignment="Left" Margin="26,80,0,0" VerticalAlignment="Top" Height="26" Width="44"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="client_name" HorizontalAlignment="Left" Height="23" Margin="110,83,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
+        <Button Background="#FF3C3C3C" Foreground="White" x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="110,153,0,0" VerticalAlignment="Top" Width="76" Click="Button_Save" RenderTransformOrigin="0.803,0.55" Height="20" />
         <ComboBox x:Name="BoxName" ItemsSource="{Binding BoxNameContent}" HorizontalAlignment="Left" Margin="26,117,0,0" VerticalAlignment="Top" Width="252" Height="22"/>
-        <Button x:Name="Exit" Content="Exit" HorizontalAlignment="Left" Margin="26,153,0,0" VerticalAlignment="Top" Width="76" Click="Exit_Click" Height="20"/>
-        <Button Content="Save" HorizontalAlignment="Left" Margin="203,225,0,0" VerticalAlignment="Top" Width="74" Click="Button_Click" RenderTransformOrigin="0.439,-1.225" Height="20"/>
-        <TextBox x:Name="price_change" HorizontalAlignment="Left" Height="22" Margin="110,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76"/>
-        <Label Content="Price change:" HorizontalAlignment="Left" Margin="26,222,0,0" VerticalAlignment="Top" Height="26" Width="80"/>
+        <Button Background="#FF3C3C3C" Foreground="White" x:Name="Exit" Content="Exit" HorizontalAlignment="Left" Margin="26,153,0,0" VerticalAlignment="Top" Width="76" Click="Exit_Click" Height="20"/>
+        <Button Background="#FF3C3C3C" Foreground="White" Content="Save" HorizontalAlignment="Left" Margin="203,225,0,0" VerticalAlignment="Top" Width="74" Click="Button_Click" RenderTransformOrigin="0.439,-1.225" Height="20"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="price_change" HorizontalAlignment="Left" Height="22" Margin="110,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Price change:" HorizontalAlignment="Left" Margin="26,222,0,0" VerticalAlignment="Top" Height="26" Width="80"/>
         <ComboBox x:Name="compare_1" ItemsSource="{Binding Compare1}" HorizontalAlignment="Left" Margin="26,278,0,0" VerticalAlignment="Top" Width="76" Height="22"/>
         <ComboBox x:Name="compare_2" ItemsSource="{Binding Compare2}" HorizontalAlignment="Left" Margin="110,278,0,0" VerticalAlignment="Top" Width="76" Height="22"/>
-        <Button Content="Start" HorizontalAlignment="Left" Margin="203,278,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="LoadTableEmaCompare"/>
-        <TextBox x:Name="order_open" HorizontalAlignment="Left" Height="20" Margin="63,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox x:Name="order_tp" HorizontalAlignment="Left" Height="20" Margin="147,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox x:Name="order_sl" HorizontalAlignment="Left" Height="20" Margin="238,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <Label Content="Long period" HorizontalAlignment="Left" Margin="26,252,0,0" VerticalAlignment="Top"/>
-        <Label Content="Short period" HorizontalAlignment="Left" Margin="110,252,0,0" VerticalAlignment="Top"/>
-        <Label Content="SL" HorizontalAlignment="Left" Margin="204,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <Label Content="TP" HorizontalAlignment="Left" Margin="110,314,0,0" VerticalAlignment="Top" Height="24"/>
-        <ListView Margin="296,21,449,0" x:Name="HistoryList" MouseLeftButtonUp="listView_Click" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" Height="331" VerticalAlignment="Top">
-            <ListView.View>
+        <Button Background="#FF3C3C3C" Foreground="White" Content="Start" HorizontalAlignment="Left" Margin="203,278,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="LoadTableEmaCompare"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="order_open" HorizontalAlignment="Left" Height="20" Margin="63,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="order_tp" HorizontalAlignment="Left" Height="20" Margin="147,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
+        <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="order_sl" HorizontalAlignment="Left" Height="20" Margin="238,318,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Long period" HorizontalAlignment="Left" Margin="26,252,0,0" VerticalAlignment="Top"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Short period" HorizontalAlignment="Left" Margin="110,252,0,0" VerticalAlignment="Top"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="SL" HorizontalAlignment="Left" Margin="204,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="TP" HorizontalAlignment="Left" Margin="110,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <ListView Background="#FF3C3C3C" Foreground="White" Margin="296,21,449,0" x:Name="HistoryList" MouseLeftButtonUp="listView_Click" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" Height="331" VerticalAlignment="Top">
+            <ListView.View >
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Sumbol}" Width="100" Header="Sumbol"/>
                     <GridViewColumn DisplayMemberBinding="{Binding long_bet}" Width="70" Header="long-bet"/>
@@ -68,7 +125,53 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label Content="Start" HorizontalAlignment="Left" Margin="26,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Background="#FF3C3C3C" Foreground="White" Content="Start" HorizontalAlignment="Left" Margin="26,314,0,0" VerticalAlignment="Top" Height="24"/>
+        <Grid x:Name="Chart_new" Margin="10,374,10,25">
+            <Grid x:Name="Chart" Height="400" HorizontalAlignment="Right" Width="3500">
+                <Grid x:Name="Chart1" Width="3500" HorizontalAlignment="Left" Height="2000" Margin="0,-10000,0,-10000" Background="#FF3C3C3C">
+                    <Grid.RenderTransform>
+                        <ScaleTransform x:Name="player1Scale" ScaleY="1" ScaleX="1"/>
+                    </Grid.RenderTransform>
+                    <!--Тень свечи-->
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
+                    <!--Тело свечи-->
+                    <ItemsControl ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
+                    
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Labels}" ItemTemplate="{StaticResource tplLineHorizontal}" ItemContainerStyle="{StaticResource styLabel}" />
 
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaLong}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Line X1="{Binding Y_1}" X2="{Binding Y_2}" Y1="{Binding X_1}" Y2="{Binding X_2}" StrokeThickness="2">
+                                    <Line.Style>
+                                        <Style TargetType="Line">
+                                            <Setter Property="Stroke" Value="White" />
+                                        </Style>
+                                    </Line.Style>
+                                </Line>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ItemsControl Grid.Column="2" ItemsSource="{Binding ListEmaShort}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Line X1="{Binding Y_1}" X2="{Binding Y_2}" Y1="{Binding X_1}" Y2="{Binding X_2}" StrokeThickness="2">
+                                    <Line.Style>
+                                        <Style TargetType="Line">
+                                            <Setter Property="Stroke" Value="#FF00D1FF"/>
+                                        </Style>
+                                    </Line.Style>
+                                </Line>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </Grid>
+
+            </Grid>
+        </Grid>
     </Grid>
+    
+
 </Window>

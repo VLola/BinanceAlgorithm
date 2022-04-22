@@ -83,6 +83,7 @@
     <Compile Include="Resourses\Kline.cs" />
     <Compile Include="Resourses\EmaResourses\ListEma.cs" />
     <Compile Include="Resourses\ListKlines.cs" />
+    <Compile Include="Resourses\ResultPercentEma.cs" />
     <Compile Include="Resourses\Socket.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

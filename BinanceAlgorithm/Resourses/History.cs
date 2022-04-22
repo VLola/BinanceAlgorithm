@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BinanceAlgorithm.Resourses
 {
@@ -13,6 +14,7 @@ namespace BinanceAlgorithm.Resourses
         public int short_loss { get; set; }
         public double long_percent { get; set; }
         public double short_percent { get; set; }
+        public List<MovementHistory> movement_history { get; set; }
         public History(string Sumbol, int long_bet, int short_bet, int long_win, int short_win, int long_loss, int short_loss)
         {
             this.Sumbol = Sumbol;
@@ -27,6 +29,14 @@ namespace BinanceAlgorithm.Resourses
             if (short_bet != 0) short_percent = Math.Round(Convert.ToDouble(short_win) / Convert.ToDouble(short_bet) * 100);
             else short_percent = 0;
 
+        }
+        public class MovementHistory
+        {
+            public bool isPositive { get; set; }
+            public int X1 { get; set; }
+            public int X2 { get; set; }
+            public decimal Y1 { get; set; }
+            public decimal Y2 { get; set; }
         }
     }
 }

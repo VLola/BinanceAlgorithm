@@ -142,7 +142,7 @@
                     <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaLong}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding Y_1}" X2="{Binding Y_2}" Y1="{Binding X_1}" Y2="{Binding X_2}" StrokeThickness="2">
+                                <Line X1="{Binding X_1}" X2="{Binding X_2}" Y1="{Binding Y_1}" Y2="{Binding Y_2}" StrokeThickness="2">
                                     <Line.Style>
                                         <Style TargetType="Line">
                                             <Setter Property="Stroke" Value="White" />
@@ -153,10 +153,10 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <ItemsControl Grid.Column="2" ItemsSource="{Binding ListEmaShort}">
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaShort}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding Y_1}" X2="{Binding Y_2}" Y1="{Binding X_1}" Y2="{Binding X_2}" StrokeThickness="2">
+                                <Line X1="{Binding X_1}" X2="{Binding X_2}" Y1="{Binding Y_1}" Y2="{Binding Y_2}" StrokeThickness="2">
                                     <Line.Style>
                                         <Style TargetType="Line">
                                             <Setter Property="Stroke" Value="#FF00D1FF"/>
@@ -167,6 +167,24 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
+                    <ItemsControl Grid.Column="2" ItemsSource="{Binding movement_history}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Line X1="{Binding X1}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeThickness="2">
+                                    <Line.Style>
+                                        <Style TargetType="Line">
+                                            <Setter Property="Stroke" Value="Red"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding isPositive}" Value="True">
+                                                    <Setter Property="Stroke" Value="#FF00BF34" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Line.Style>
+                                </Line>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
 
             </Grid>

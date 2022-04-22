@@ -460,89 +460,22 @@ namespace BinanceAlgorithm
                 history.Clear();
                 dataView.SortDescriptions.Clear();
 
+                //-------------------------------------------------------------------------------------
                 string path_ema = System.IO.Path.Combine(Environment.CurrentDirectory, "ema");
                 string json1 = File.ReadAllText(path_ema + "\\" + compare_1.ToString());
                 string json2 = File.ReadAllText(path_ema + "\\" + compare_2.ToString());
-                var list_ema1 = JsonConvert.DeserializeObject<ObjectListEma>(json1);
-                var list_ema2 = JsonConvert.DeserializeObject<ObjectListEma>(json2);
-                //-------------------------------------------------------------------------------------
+                var list_ema_long = JsonConvert.DeserializeObject<ObjectListEma>(json1);
+                var list_ema_short = JsonConvert.DeserializeObject<ObjectListEma>(json2);
                 List<ListEma> list_result = new List<ListEma>();
-                for (int i = 0; i < list_ema1.Ema.Count; i++)
-                {
-                    string sumbol = list_ema1.Ema[i].Sumbol;
-                    List<decimal> list_decimal = new List<decimal>();
-                    for (int j = 0; j < list_ema1.Ema[i].list.Count; j++)
-                    {
-                        decimal a = list_ema1.Ema[i].list[j];
-                        decimal b = list_ema2.Ema[i].list[j];
-                        decimal result;
-                        if (a == b) result = 0m;
-                        else result = (a - b) / b * 100;
-                        list_decimal.Add(Math.Round(result, 2));
-                    }
-                    ListEma percent_result = new ListEma(sumbol, list_decimal);
-                    list_result.Add(percent_result);
-                }
+
+                for (int i = 0; i < list_ema_long.Ema.Count; i++) list_result.Add(ResultPercentEma.ResultListEma(list_ema_long.Ema[i], list_ema_short.Ema[i]));
                 //-----------------------------------------------------------------------------------
                 decimal start = Convert.ToDecimal(order_open.Text);
                 decimal tp = Convert.ToDecimal(order_tp.Text);
                 decimal sl = Convert.ToDecimal(order_sl.Text);
-                foreach (var it in list_result)
-                {
-                    int long_bet = 0;
-                    int short_bet = 0;
-                    int long_win = 0;
-                    int short_win = 0;
-                    int long_loss = 0;
-                    int short_loss = 0;
-                    string sumbol = it.Sumbol;
-                    for (int i = 0; i < it.list.Count; i++)
-                    {
-                        if (it.list[i] > start)
-                        {
-                            decimal bet = it.list[i];
-                            for (int j = i; j < it.list.Count; j++)
-                            {
-                                if (it.list[j] > bet + sl)          // + или - , < или >
-                                {
-                                    short_bet++;
-                                    short_loss++;
-                                    i = j;
-                                    break;
-                                }
-                                else if (it.list[j] < bet - tp)          // + или - , < или >
-                                {
-                                    short_bet++;
-                                    short_win++;
-                                    i = j;
-                                    break;
-                                }
-                            }
-                        }
-                        else if (it.list[i] < -start)
-                        {
-                            decimal bet = it.list[i];
-                            for (int j = i; j < it.list.Count; j++)
-                            {
-                                if (it.list[j] < bet - sl)          // + или - , < или >
-                                {
-                                    long_bet++;
-                                    long_loss++;
-                                    i = j;
-                                    break;
-                                }
-                                else if (it.list[j] > bet + tp)          // + или - , < или >
-                                {
-                                    long_bet++;
-                                    long_win++;
-                                    i = j;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    history.Add(new History(sumbol, long_bet, short_bet, long_win, short_win, long_loss, short_loss));
-                }
+
+                foreach (var it in list_result) history.Add(ResultPercentEma.ResultHistory(it, start, tp, sl));
+
                 HistoryList.Items.Refresh();
             }
             catch (Exception e)
@@ -587,8 +520,10 @@ namespace BinanceAlgorithm
                             string json2 = File.ReadAllText(path_ema + "\\" + compare_2.Text);
                             var list_ema1 = JsonConvert.DeserializeObject<ObjectListEma>(json1);
                             var list_ema2 = JsonConvert.DeserializeObject<ObjectListEma>(json2);
-
-                            Chart1.DataContext = new Candlestick(it, list_ema1.Ema[count].list, list_ema2.Ema[count].list);
+                            decimal start = Convert.ToDecimal(order_open.Text);
+                            decimal tp = Convert.ToDecimal(order_tp.Text);
+                            decimal sl = Convert.ToDecimal(order_sl.Text);
+                            Chart1.DataContext = new Candlestick(it, list_ema1.Ema[count].list, list_ema2.Ema[count].list, start, tp, sl);
                         }
                         count++;
                     }
@@ -665,7 +600,7 @@ namespace BinanceAlgorithm
         }
         #endregion
 
-        
+        #region - Chart Events -
         private void WindowChart_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -680,15 +615,19 @@ namespace BinanceAlgorithm
                     Chart1.Width = width + x;
                 }
 
-                //double y = 0;
-                //if (e.GetPosition(this).Y - y_old > 0) y = -10;
-                //else if (e.GetPosition(this).Y - y_old < 0) y = 10;
-                //if (y_old != 0)
-                //{
-                //    double heigth = Chart1.Height;
-                //    if (Chart1.Height + y >= 300 && Chart1.Height + y <= 1700) Chart1.Height = heigth + y;
-                //    else Chart1.Height = heigth - y;
-                //}
+                double y = 0;
+                if (e.GetPosition(this).Y - y_old > 0) y = 20;
+                else if (e.GetPosition(this).Y - y_old < 0) y = -20;
+                if (y_old != 0)
+                {
+                    //double heigth = Chart1.Height;
+                    //if (Chart1.Height + y <= 2000 && Chart1.Height + y >= -2000) Chart1.Height = heigth + y;
+                    double margin_top = Chart1.Margin.Top + y;
+                    double margin_bottom = Chart1.Margin.Bottom - y;
+                    Chart1.Margin = new Thickness(0, margin_top, 0 , margin_bottom);
+
+
+                }
             }
             x_old = e.GetPosition(this).X;
             y_old = e.GetPosition(this).Y;
@@ -698,5 +637,6 @@ namespace BinanceAlgorithm
         {
             if (player1Scale.ScaleY + Convert.ToDouble(e.Delta) / 2000 > 0) player1Scale.ScaleY = player1Scale.ScaleY + Convert.ToDouble(e.Delta) / 2000;
         }
+        #endregion
     }
 }

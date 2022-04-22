@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BinanceAlgorithm.Resourses.History;
 
 namespace BinanceAlgorithm.Resourses
 {
@@ -12,6 +13,7 @@ namespace BinanceAlgorithm.Resourses
         public List<Ema> ListEmaLong { get; } = new List<Ema>();
         public List<Ema> ListEmaShort { get; } = new List<Ema>();
         public List<double> Labels { get; } = new List<double>();
+        public List<MovementHistory> movement_history { get; set; } = new List<MovementHistory>();
         public class Candle
         {
             public double Date { get; set; }                            // расстояние между свечами
@@ -28,12 +30,14 @@ namespace BinanceAlgorithm.Resourses
             public decimal Y_1 { get; set; }
             public decimal Y_2 { get; set; }
         }
-        public Candlestick(ListKlines list, List<decimal> list_ema_long, List<decimal> list_ema_short)
+        public Candlestick(ListKlines list, List<decimal> list_ema_long, List<decimal> list_ema_short, decimal start, decimal tp, decimal sl)
         {
 
             try
             {
-                for(int i = -5000; i<5000; i += 100)
+                movement_history = ResultPercentEma.ResultHistory(ResultPercentEma.ResultListEma(new ListEma(list.symbol, list_ema_long), new ListEma(list.symbol, list_ema_short)), start, tp, sl).movement_history;
+
+                for (int i = -5000; i<5000; i += 100)
                 {
                     Labels.Add(i);
                 }
@@ -62,17 +66,34 @@ namespace BinanceAlgorithm.Resourses
                     decimal low = ((it.Low * mul) - minus) * X;
                     decimal open = ((it.Open * mul) - minus) * X;
                     decimal close = ((it.Close * mul) - minus) * X;
+
+                    for(int i = 0; i < movement_history.Count; i++ )
+                    {
+                        if (date == (movement_history[i].X1 * 7))
+                        {
+                            movement_history[i].Y1 = ((list_ema_long[movement_history[i].X1] * mul) - minus) * X;
+                            movement_history[i].X1 = movement_history[i].X1 * 7;
+                        }
+                        else if(date == (movement_history[i].X2 * 7))
+                        {
+                            movement_history[i].Y2 = ((list_ema_long[movement_history[i].X2] * mul) - minus) * X;
+                            movement_history[i].X2 = movement_history[i].X2 * 7;
+
+                        } 
+                        
+                    }
+
                     if (count < list.listKlines.Count - 1)
                     {
-                        ema_long.X_1 = ((list_ema_long[count] * mul) - minus) * X;
-                        ema_long.Y_1 = date;
-                        ema_long.X_2 = ((list_ema_long[count + 1] * mul) - minus) * X;
-                        ema_long.Y_2 = date + 7;
+                        ema_long.Y_1 = ((list_ema_long[count] * mul) - minus) * X;
+                        ema_long.X_1 = date;
+                        ema_long.Y_2 = ((list_ema_long[count + 1] * mul) - minus) * X;
+                        ema_long.X_2 = date + 7;
 
-                        ema_short.X_1 = ((list_ema_short[count] * mul) - minus) * X;
-                        ema_short.Y_1 = date;
-                        ema_short.X_2 = ((list_ema_short[count + 1] * mul) - minus) * X;
-                        ema_short.Y_2 = date + 7;
+                        ema_short.Y_1 = ((list_ema_short[count] * mul) - minus) * X;
+                        ema_short.X_1 = date;
+                        ema_short.Y_2 = ((list_ema_short[count + 1] * mul) - minus) * X;
+                        ema_short.X_2 = date + 7;
                     }
 
 
@@ -105,6 +126,7 @@ namespace BinanceAlgorithm.Resourses
                     ListEmaLong.Add(ema_long);
                     ListEmaShort.Add(ema_short);
                 }
+                
             }
             catch (Exception e)
             {

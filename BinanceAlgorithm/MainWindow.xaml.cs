@@ -289,7 +289,7 @@ namespace BinanceAlgorithm
                     List<Kline> list = new List<Kline>();
                     foreach (var it in result.Data.ToList())
                     {
-                        list.Add(new Kline(it.OpenTime, it.OpenPrice, it.HighPrice, it.LowPrice, it.ClosePrice, it.CloseTime));
+                        list.Insert(0, new Kline(it.OpenTime, it.OpenPrice, it.HighPrice, it.LowPrice, it.ClosePrice, it.CloseTime));
                     }
                     LIST_KLINES.Add(new ListKlines(SYMBOL, list));
                 }
@@ -365,19 +365,34 @@ namespace BinanceAlgorithm
                     var list = JsonConvert.DeserializeObject<List<ListKlines>>(json);
 
                     List<ListEma> list_ema = new List<ListEma>();
+                    int size = list[0].listKlines.Count;
                     for (int a = 0; a < list.Count; a++)
                     {
                         symbol_ema = list[a].symbol;
                         List<decimal> list_average = new List<decimal>();
-                        for (int i = 0; i < list[a].listKlines.Count - period; i++)
+                        for (int i = 0; i < size; i++)
                         {
                             decimal sum = 0m;
-                            for (int j = 0; j < period; j++)
-                            {
-                                decimal average_kline = (list[a].listKlines[i + j].High + list[a].listKlines[i + j].Low) / 2;
-                                sum += average_kline;
+                            if(size - i > period)
+                            {                                                                                                                   // Изменено условие
+                                for (int j = 0; j < period; j++)
+                                {
+                                    decimal average_kline = (list[a].listKlines[i + j].High + list[a].listKlines[i + j].Low) / 2;
+                                    sum += average_kline;
+                                }
+                                list_average.Add(sum / period);
                             }
-                            list_average.Add(sum / period);
+                            else
+                            {
+                                for (int j = 0; j < (size - i); j++)
+                                {
+                                    decimal average_kline = (list[a].listKlines[i + j].High + list[a].listKlines[i + j].Low) / 2;
+                                    sum += average_kline;
+                                }
+                                list_average.Add(sum / size - i);
+                            }
+
+                            
                         }
                         ListEma ema = new ListEma(symbol_ema, list_average);
                         list_ema.Add(ema);
@@ -547,22 +562,38 @@ namespace BinanceAlgorithm
         #region - Load Candlestick -
         private void listView_Click(object sender, RoutedEventArgs e)
         {
-            string path = System.IO.Path.Combine(Environment.CurrentDirectory, "");
-            string json = File.ReadAllText(path + @"\times\" + cmbTest1.Text + ".txt");
-            var list = JsonConvert.DeserializeObject<List<ListKlines>>(json);
-
-            History item = (History)(sender as ListView).SelectedItem;
-            if (item != null)
+            try
             {
-                foreach(var it in list)
+                string path = System.IO.Path.Combine(Environment.CurrentDirectory, "");
+                string json = File.ReadAllText(path + @"\times\" + cmbTest1.Text + ".txt");
+                var list = JsonConvert.DeserializeObject<List<ListKlines>>(json);
+
+                History item = (History)(sender as ListView).SelectedItem;
+                if (item != null)
                 {
-                    if(item.Sumbol == it.symbol)
+                    int count = 0;
+                    foreach (var it in list)
                     {
-                        WindowChart new_chart = new WindowChart(it);
-                        new_chart.ShowDialog();
+                        if (item.Sumbol == it.symbol)
+                        {
+                            string path_ema = System.IO.Path.Combine(Environment.CurrentDirectory, "ema");
+                            string json1 = File.ReadAllText(path_ema + "\\" + compare_1.Text);
+                            string json2 = File.ReadAllText(path_ema + "\\" + compare_2.Text);
+                            var list_ema1 = JsonConvert.DeserializeObject<ObjectListEma>(json1);
+                            var list_ema2 = JsonConvert.DeserializeObject<ObjectListEma>(json2);
+
+                            WindowChart new_chart = new WindowChart(it, list_ema1.Ema[count].list, list_ema2.Ema[count].list);
+                            new_chart.ShowDialog();
+                        }
+                        count++;
                     }
                 }
             }
+            catch (Exception c)
+            {
+                ErrorText.Add(c.Message);
+            }
+            
         }
         #endregion
 

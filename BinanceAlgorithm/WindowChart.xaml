@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:my="clr-namespace:BinanceAlgorithm"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Height="450" Width="1400" Background="#FF3C3C3C" mc:Ignorable="d" x:Name="transform1">
+        Height="450" Width="1400" Background="#FF3C3C3C"  mc:Ignorable="d" x:Name="transform1">
     <Window.Resources>
-        <ScaleTransform x:Key="trfFlip" ScaleY="-1" />
+        <ScaleTransform x:Key="trfFlip" ScaleY="-1" ScaleX="-1" />
         <ItemsPanelTemplate x:Key="tplCanvas">
             <Canvas />
         </ItemsPanelTemplate>
@@ -32,6 +32,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        
         <!-- Тень свечи -->
         <DataTemplate x:Key="tplCandleLine" DataType="my:Candle">
             <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding High}" />
@@ -53,15 +54,44 @@
             <Setter Property="Canvas.Top" Value="{Binding Open}"/>
         </Style>
     </Window.Resources>
-    <Grid x:Name="Chart" Height="350" HorizontalAlignment="Right" Width="3500">
-        <Grid x:Name="Chart1" Width="3500" HorizontalAlignment="Right" Height="1000" Margin="0,-1000,0,-1000" >
+    <Grid x:Name="Chart" Height="400" HorizontalAlignment="Right" Width="3500">
+        <Grid x:Name="Chart1" Width="3500" HorizontalAlignment="Left" Height="2000" Margin="0,-10000,0,-10000" >
             <Grid.RenderTransform>
-                <ScaleTransform x:Name="player1Scale" ScaleY="1"/>
+                <ScaleTransform x:Name="player1Scale" ScaleY="1" ScaleX="1"/>
             </Grid.RenderTransform>
             <!--Тень свечи-->
             <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
             <!--Тело свечи-->
             <ItemsControl ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
+
+            <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaLong}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Line X1="{Binding Y_1}" X2="{Binding Y_2}" Y1="{Binding X_1}" Y2="{Binding X_2}" StrokeThickness="2">
+                            <Line.Style>
+                                <Style TargetType="Line">
+                                    <Setter Property="Stroke" Value="White" />
+                                </Style>
+                            </Line.Style>
+                        </Line>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl Grid.Column="2" ItemsSource="{Binding ListEmaShort}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Line X1="{Binding Y_1}" X2="{Binding Y_2}" Y1="{Binding X_1}" Y2="{Binding X_2}" StrokeThickness="2">
+                            <Line.Style>
+                                <Style TargetType="Line">
+                                    <Setter Property="Stroke" Value="#FF00D1FF"/>
+                                </Style>
+                            </Line.Style>
+                        </Line>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
         </Grid>
 
     </Grid>

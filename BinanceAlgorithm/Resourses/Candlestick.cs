@@ -9,10 +9,10 @@ namespace BinanceAlgorithm.Resourses
 {
     public class Candlestick
     {
-        public List<Candle> Candles { get; } = new List<Candle>();
-        public List<Ema> ListEmaLong { get; } = new List<Ema>();
-        public List<Ema> ListEmaShort { get; } = new List<Ema>();
-        public List<double> Labels { get; } = new List<double>();
+        public List<Candle> Candles { get; set; } = new List<Candle>();
+        public List<Ema> ListEmaLong { get; set; } = new List<Ema>();
+        public List<Ema> ListEmaShort { get; set; } = new List<Ema>();
+        public List<double> Labels { get; set; } = new List<double>();
         public List<MovementHistory> movement_history { get; set; } = new List<MovementHistory>();
         public class Candle
         {
@@ -30,12 +30,12 @@ namespace BinanceAlgorithm.Resourses
             public decimal Y_1 { get; set; }
             public decimal Y_2 { get; set; }
         }
-        public Candlestick(ListKlines list, List<decimal> list_ema_long, List<decimal> list_ema_short, decimal start, decimal tp, decimal sl)
+        public Candlestick(List<MovementHistory> history, ListKlines list, List<decimal> list_ema_long, List<decimal> list_ema_short)
         {
 
             try
             {
-                movement_history = ResultPercentEma.ResultHistory(ResultPercentEma.ResultListEma(new ListEma(list.symbol, list_ema_long), new ListEma(list.symbol, list_ema_short)), start, tp, sl).movement_history;
+                movement_history = history;
 
                 for (int i = -5000; i<5000; i += 100)
                 {
@@ -46,6 +46,7 @@ namespace BinanceAlgorithm.Resourses
                 {
                     if (it.High > Max) Max = it.High;
                 }
+
 
                 decimal mul = 100m / Max;
                 decimal X = 200m;
@@ -71,14 +72,13 @@ namespace BinanceAlgorithm.Resourses
                     {
                         if (date == (movement_history[i].X1 * 7))
                         {
-                            movement_history[i].Y1 = ((list_ema_long[movement_history[i].X1] * mul) - minus) * X;
+                            movement_history[i].Y1 = ((movement_history[i].Y1 * mul) - minus) * X;
                             movement_history[i].X1 = movement_history[i].X1 * 7;
                         }
                         else if(date == (movement_history[i].X2 * 7))
                         {
-                            movement_history[i].Y2 = ((list_ema_long[movement_history[i].X2] * mul) - minus) * X;
+                            movement_history[i].Y2 = ((movement_history[i].Y2 * mul) - minus) * X;
                             movement_history[i].X2 = movement_history[i].X2 * 7;
-
                         } 
                         
                     }
@@ -126,7 +126,6 @@ namespace BinanceAlgorithm.Resourses
                     ListEmaLong.Add(ema_long);
                     ListEmaShort.Add(ema_short);
                 }
-                
             }
             catch (Exception e)
             {

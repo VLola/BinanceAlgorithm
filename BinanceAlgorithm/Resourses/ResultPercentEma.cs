@@ -23,29 +23,32 @@ namespace BinanceAlgorithm.Resourses
             }
             return new ListEma(list_ema_long.Sumbol, list_decimal);
         }
-        public static History ResultHistory(ListEma list_ema, decimal start, decimal tp, decimal sl)
+        public static History ResultHistory(ListEma list_ema, ListEma list_ema_short, decimal start, decimal tp, decimal sl)
         {
-            //list_ema.list.Reverse();
             int long_bet = 0;
             int short_bet = 0;
             int long_win = 0;
             int short_win = 0;
             int long_loss = 0;
             int short_loss = 0;
+
+
             List<MovementHistory> movement_history = new List<MovementHistory>();
-            for (int i = 0; i < list_ema.list.Count; i++)
+            for (int i = list_ema.list.Count - 1; i > 0; i--)
             {
                 MovementHistory m_history = new MovementHistory();
                 if (list_ema.list[i] > start)
                 {
                     decimal bet = list_ema.list[i];
 
-                    for (int j = i; j < list_ema.list.Count; j++)
+                    for (int j = i; j > 0; j--)
                     {
                         if (list_ema.list[j] > bet + sl)          // + или - , < или >
                         {
                             m_history.X1 = i;
                             m_history.X2 = j;
+                            m_history.Y1 = list_ema_short.list[i];
+                            m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = false;
                             short_bet++;
                             short_loss++;
@@ -56,6 +59,8 @@ namespace BinanceAlgorithm.Resourses
                         {
                             m_history.X1 = i;
                             m_history.X2 = j;
+                            m_history.Y1 = list_ema_short.list[i];
+                            m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = true;
                             short_bet++;
                             short_win++;
@@ -67,12 +72,14 @@ namespace BinanceAlgorithm.Resourses
                 else if (list_ema.list[i] < -start)
                 {
                     decimal bet = list_ema.list[i];
-                    for (int j = i; j < list_ema.list.Count; j++)
+                    for (int j = i; j > 0; j--)
                     {
                         if (list_ema.list[j] < bet - sl)          // + или - , < или >
                         {
                             m_history.X1 = i;
                             m_history.X2 = j;
+                            m_history.Y1 = list_ema_short.list[i];
+                            m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = false;
                             long_bet++;
                             long_loss++;
@@ -83,6 +90,8 @@ namespace BinanceAlgorithm.Resourses
                         {
                             m_history.X1 = i;
                             m_history.X2 = j;
+                            m_history.Y1 = list_ema_short.list[i];
+                            m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = true;
                             long_bet++;
                             long_win++;
@@ -91,10 +100,10 @@ namespace BinanceAlgorithm.Resourses
                         }
                     }
                 }
-                movement_history.Add(m_history);
+                movement_history.Insert(0, m_history);
             }
+
             History history = new History(list_ema.Sumbol, long_bet, short_bet, long_win, short_win, long_loss, short_loss);
-            //movement_history.Reverse();
             history.movement_history = movement_history;
             return history;
         }

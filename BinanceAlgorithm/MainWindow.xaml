@@ -130,7 +130,7 @@
             <Grid x:Name="Chart" Height="400" HorizontalAlignment="Right" Width="3500">
                 <Grid x:Name="Chart1" Width="3500" HorizontalAlignment="Left" Height="2000" Margin="0,-10000,0,-10000" Background="#FF3C3C3C">
                     <Grid.RenderTransform>
-                        <ScaleTransform x:Name="player1Scale" ScaleY="1" ScaleX="1"/>
+                        <ScaleTransform x:Name="player1Scale" ScaleY="1"/>
                     </Grid.RenderTransform>
                     <!--Тень свечи-->
                     <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
@@ -138,7 +138,7 @@
                     <ItemsControl ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
                     
                     <ItemsControl Grid.Column="1" ItemsSource="{Binding Labels}" ItemTemplate="{StaticResource tplLineHorizontal}" ItemContainerStyle="{StaticResource styLabel}" />
-
+                    
                     <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaLong}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -170,13 +170,13 @@
                     <ItemsControl Grid.Column="2" ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding X1}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeThickness="2">
+                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y2}" Y2="{Binding Y1}" StrokeThickness="5">
                                     <Line.Style>
                                         <Style TargetType="Line">
                                             <Setter Property="Stroke" Value="Red"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding isPositive}" Value="True">
-                                                    <Setter Property="Stroke" Value="#FF00BF34" />
+                                                    <Setter Property="Stroke" Value="#FF17FF00" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

@@ -295,7 +295,7 @@ namespace BinanceAlgorithm
                     List<Kline> list = new List<Kline>();
                     foreach (var it in result.Data.ToList())
                     {
-                        list.Insert(0, new Kline(it.OpenTime, it.OpenPrice, it.HighPrice, it.LowPrice, it.ClosePrice, it.CloseTime));
+                        list.Insert(0, new Kline(it.OpenTime, it.OpenPrice, it.HighPrice, it.LowPrice, it.ClosePrice, it.CloseTime));                                 // список монет с ценами
                     }
                     LIST_KLINES.Add(new ListKlines(SYMBOL, list));
                 }
@@ -395,11 +395,10 @@ namespace BinanceAlgorithm
                                     decimal average_kline = (list[a].listKlines[i + j].High + list[a].listKlines[i + j].Low) / 2;
                                     sum += average_kline;
                                 }
-                                list_average.Add(sum / size - i);
+                                list_average.Add(sum / (size - i));
                             }
-
-
                         }
+
                         ListEma ema = new ListEma(symbol_ema, list_average);
                         list_ema.Add(ema);
                     }
@@ -474,7 +473,7 @@ namespace BinanceAlgorithm
                 decimal tp = Convert.ToDecimal(order_tp.Text);
                 decimal sl = Convert.ToDecimal(order_sl.Text);
 
-                foreach (var it in list_result) history.Add(ResultPercentEma.ResultHistory(it, start, tp, sl));
+                for(int i = 0;i < list_result.Count; i++) history.Add(ResultPercentEma.ResultHistory(list_result[i], list_ema_short.Ema[i], start, tp, sl));
 
                 HistoryList.Items.Refresh();
             }
@@ -518,12 +517,9 @@ namespace BinanceAlgorithm
                             string path_ema = System.IO.Path.Combine(Environment.CurrentDirectory, "ema");
                             string json1 = File.ReadAllText(path_ema + "\\" + compare_1.Text);
                             string json2 = File.ReadAllText(path_ema + "\\" + compare_2.Text);
-                            var list_ema1 = JsonConvert.DeserializeObject<ObjectListEma>(json1);
-                            var list_ema2 = JsonConvert.DeserializeObject<ObjectListEma>(json2);
-                            decimal start = Convert.ToDecimal(order_open.Text);
-                            decimal tp = Convert.ToDecimal(order_tp.Text);
-                            decimal sl = Convert.ToDecimal(order_sl.Text);
-                            Chart1.DataContext = new Candlestick(it, list_ema1.Ema[count].list, list_ema2.Ema[count].list, start, tp, sl);
+                            var list_ema_long = JsonConvert.DeserializeObject<ObjectListEma>(json1);
+                            var list_ema_short = JsonConvert.DeserializeObject<ObjectListEma>(json2);
+                            Chart1.DataContext = new Candlestick(history[count].movement_history, it, list_ema_long.Ema[count].list, list_ema_short.Ema[count].list);
                         }
                         count++;
                     }
@@ -620,13 +616,9 @@ namespace BinanceAlgorithm
                 else if (e.GetPosition(this).Y - y_old < 0) y = -20;
                 if (y_old != 0)
                 {
-                    //double heigth = Chart1.Height;
-                    //if (Chart1.Height + y <= 2000 && Chart1.Height + y >= -2000) Chart1.Height = heigth + y;
                     double margin_top = Chart1.Margin.Top + y;
                     double margin_bottom = Chart1.Margin.Bottom - y;
                     Chart1.Margin = new Thickness(0, margin_top, 0 , margin_bottom);
-
-
                 }
             }
             x_old = e.GetPosition(this).X;

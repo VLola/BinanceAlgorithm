@@ -74,9 +74,7 @@
     <Compile Include="Resourses\Candlestick.cs" />
     <Compile Include="Resourses\Client.cs" />
     <Compile Include="Resourses\ClientList.cs" />
-    <Compile Include="Resourses\EmaResourses\EmaCompare\ColumnTableEma.cs" />
-    <Compile Include="Resourses\EmaResourses\EmaCompare\Compare.cs" />
-    <Compile Include="Resourses\EmaResourses\EmaCompare\EmaCompare.cs" />
+    <Compile Include="Resourses\EmaResourses\EmaCompare.cs" />
     <Compile Include="Resourses\EmaResourses\ObjectListEma.cs" />
     <Compile Include="Resourses\ErrorText.cs" />
     <Compile Include="Resourses\History.cs" />

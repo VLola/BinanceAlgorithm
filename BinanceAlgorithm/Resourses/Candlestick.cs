@@ -132,8 +132,7 @@ namespace BinanceAlgorithm.Resourses
                 foreach (var iterator in movement_history)
                 {
                     iterator.width = iterator.X2 - iterator.X1;
-                    if(iterator.isLongPeriod) iterator.height_long = iterator.Y2 - iterator.Y1;
-                    else iterator.height_short = iterator.Y1 - iterator.Y2;
+                    iterator.height = Math.Max(iterator.Y1, iterator.Y2) - Math.Min(iterator.Y1, iterator.Y2);
                 }
             }
             catch (Exception e)

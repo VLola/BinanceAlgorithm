@@ -179,24 +179,24 @@
                                 <Line X1="{Binding X_1}" X2="{Binding X_2}" Y1="{Binding Y_1}" Y2="{Binding Y_2}" StrokeThickness="2">
                                     <Line.Style>
                                         <Style TargetType="Line">
-                                            <Setter Property="Stroke" Value="#FF00D1FF"/>
+                                            <Setter Property="Stroke" Value="#FFF4B1FF"/>
                                         </Style>
                                     </Line.Style>
                                 </Line>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <!-- Линия ставки горизантальная-->
+                    <!--Линия ставки горизантальная-->
                     <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeDashArray="5" StrokeThickness="1">
+                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeThickness="2">
                                     <Line.Style>
                                         <Style TargetType="Line">
-                                            <Setter Property="Stroke" Value="#FFFF4600"/>
+                                            <Setter Property="Stroke" Value="#FFFFD100"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding isPositive}" Value="True">
-                                                    <Setter Property="Stroke" Value="#FF17FF00" />
+                                                    <Setter Property="Stroke" Value="#FF00AEFF" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -205,49 +205,38 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <!-- Линия ставки вертикальная short-->
+                    <!--Линия ставки вертикальная-->
                     <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Rectangle Width="1" Height="{Binding height_short}" StrokeDashArray="5 10" StrokeThickness="1" Stroke="#FFFF4600"/>
+                                <Line X1="{Binding X2}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y2}" StrokeThickness="2">
+                                    <Line.Style>
+                                        <Style TargetType="Line">
+                                            <Setter Property="Stroke" Value="#FFFFD100"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding isPositive}" Value="True">
+                                                    <Setter Property="Stroke" Value="#FF00AEFF" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Line.Style>
+                                </Line>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding X2}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Y2}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
-                    
-                    <!-- Линия ставки вертикальная long-->
-                    <ItemsControl ItemsSource="{Binding movement_history}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Rectangle Width="1" Height="{Binding height_long}" StrokeDashArray="5 10" StrokeThickness="1" Stroke="#FF17FF00"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding X2}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Y1}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
 
-                    <!-- Точка isPositive -->
+                    <!--Точка isPositive--> 
                     <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Ellipse Width="10" Height="15" Margin="-4,-7" StrokeThickness="1">
                                     <Ellipse.Style>
                                         <Style TargetType="Ellipse">
-                                            <Setter Property="Fill" Value="#FFFFD100"/>
                                             <Setter Property="Stroke" Value="Black" />
+                                            <Setter Property="Fill" Value="#FFFFD100" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding isPositive}" Value="True">
                                                     <Setter Property="Fill" Value="#FF00AEFF" />
-                                                    <Setter Property="Stroke" Value="Black" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -263,19 +252,18 @@
                         </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
 
-                    <!-- Точка isLongPeriod -->
+                     <!--Точка isLongPeriod--> 
                     <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Ellipse Width="10" Height="15" Margin="-4,-7" StrokeThickness="1">
                                     <Ellipse.Style>
                                         <Style TargetType="Ellipse">
-                                            <Setter Property="Fill" Value="Red"/>
                                             <Setter Property="Stroke" Value="Black" />
+                                            <Setter Property="Fill" Value="Red" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding isLongPeriod}" Value="True">
                                                     <Setter Property="Fill" Value="Lime" />
-                                                    <Setter Property="Stroke" Value="Black" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -290,6 +278,7 @@
                             </Style>
                         </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
+
                 </Grid>
 
             </Grid>

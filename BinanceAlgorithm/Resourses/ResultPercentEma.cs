@@ -50,9 +50,9 @@ namespace BinanceAlgorithm.Resourses
                             m_history.Y1 = list_ema_short.list[i];
                             m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = false;
-                            m_history.isLongPeriod = false;
-                            short_bet++;
-                            short_loss++;
+                            m_history.isLongPeriod = true;
+                            long_bet++;
+                            long_loss++;
                             i = j;
                             break;
                         }
@@ -63,9 +63,9 @@ namespace BinanceAlgorithm.Resourses
                             m_history.Y1 = list_ema_short.list[i];
                             m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = true;
-                            m_history.isLongPeriod = false;
-                            short_bet++;
-                            short_win++;
+                            m_history.isLongPeriod = true;
+                            long_bet++;
+                            long_win++;
                             i = j;
                             break;
                         }
@@ -83,9 +83,9 @@ namespace BinanceAlgorithm.Resourses
                             m_history.Y1 = list_ema_short.list[i];
                             m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = false;
-                            m_history.isLongPeriod = true;
-                            long_bet++;
-                            long_loss++;
+                            m_history.isLongPeriod = false;
+                            short_bet++;
+                            short_loss++;
                             i = j;
                             break;
                         }
@@ -96,9 +96,9 @@ namespace BinanceAlgorithm.Resourses
                             m_history.Y1 = list_ema_short.list[i];
                             m_history.Y2 = list_ema_short.list[j];
                             m_history.isPositive = true;
-                            m_history.isLongPeriod = true;
-                            long_bet++;
-                            long_win++;
+                            m_history.isLongPeriod = false;
+                            short_bet++;
+                            short_win++;
                             i = j;
                             break;
                         }

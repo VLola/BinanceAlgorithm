@@ -39,8 +39,7 @@ namespace BinanceAlgorithm.Resourses
             public decimal Y1 { get; set; }
             public decimal Y2 { get; set; }
             public decimal width { get; set; }
-            public decimal height_long { get; set; }
-            public decimal height_short { get; set; }
+            public decimal height { get; set; }
         }
     }
 }

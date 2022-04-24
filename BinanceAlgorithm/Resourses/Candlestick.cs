@@ -52,6 +52,8 @@ namespace BinanceAlgorithm.Resourses
                 decimal X = 200m;
                 decimal minus = 97m;
 
+                
+
                 int date = 0;
                 int count = 0;
                 foreach (var it in list.listKlines)
@@ -68,19 +70,19 @@ namespace BinanceAlgorithm.Resourses
                     decimal open = ((it.Open * mul) - minus) * X;
                     decimal close = ((it.Close * mul) - minus) * X;
 
-                    for(int i = 0; i < movement_history.Count; i++ )
+                    for (int i = 0; i < movement_history.Count; i++)
                     {
                         if (date == (movement_history[i].X1 * 7))
                         {
                             movement_history[i].Y1 = ((movement_history[i].Y1 * mul) - minus) * X;
                             movement_history[i].X1 = movement_history[i].X1 * 7;
+
                         }
-                        else if(date == (movement_history[i].X2 * 7))
+                        else if (date == (movement_history[i].X2 * 7))
                         {
                             movement_history[i].Y2 = ((movement_history[i].Y2 * mul) - minus) * X;
                             movement_history[i].X2 = movement_history[i].X2 * 7;
-                        } 
-                        
+                        }
                     }
 
                     if (count < list.listKlines.Count - 1)
@@ -125,6 +127,13 @@ namespace BinanceAlgorithm.Resourses
                     Candles.Add(candle);
                     ListEmaLong.Add(ema_long);
                     ListEmaShort.Add(ema_short);
+                }
+                
+                foreach (var iterator in movement_history)
+                {
+                    iterator.width = iterator.X2 - iterator.X1;
+                    if(iterator.isLongPeriod) iterator.height_long = iterator.Y2 - iterator.Y1;
+                    else iterator.height_short = iterator.Y1 - iterator.Y2;
                 }
             }
             catch (Exception e)

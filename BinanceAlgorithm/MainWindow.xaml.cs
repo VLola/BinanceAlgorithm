@@ -12,7 +12,6 @@ using BinanceAlgorithm.Resourses.EmaResourses;
 using System.Data;
 using System.Windows.Data;
 using System.ComponentModel;
-using System.Windows.Media;
 
 namespace BinanceAlgorithm
 {
@@ -43,7 +42,6 @@ namespace BinanceAlgorithm
             order_open.Text = "0,5";
             order_sl.Text = "0,1";
             order_tp.Text = "0,1";
-
 
             MouseWheel += WindowChart_MouseWheel;
             MouseMove += WindowChart_MouseMove;
@@ -609,6 +607,7 @@ namespace BinanceAlgorithm
                     double width = Chart1.Width;
                     //if (Chart1.Width + x >= 1300 && Chart1.Width + x <= 3500)
                     Chart1.Width = width + x;
+                    
                 }
 
                 double y = 0;

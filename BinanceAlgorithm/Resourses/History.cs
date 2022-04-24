@@ -33,10 +33,14 @@ namespace BinanceAlgorithm.Resourses
         public class MovementHistory
         {
             public bool isPositive { get; set; }
+            public bool isLongPeriod { get; set; }
             public int X1 { get; set; }
             public int X2 { get; set; }
             public decimal Y1 { get; set; }
             public decimal Y2 { get; set; }
+            public decimal width { get; set; }
+            public decimal height_long { get; set; }
+            public decimal height_short { get; set; }
         }
     }
 }

@@ -7,61 +7,20 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="MainWindow" Height="850" Width="1450"
-        Background="#FF3C3C3C" Foreground="White">
+        Background="#FF3C3C3C" Foreground="White" x:Name="Valik">
     <Window.Resources>
-        <ScaleTransform x:Key="trfFlip" ScaleY="-1" ScaleX="-1" />
-        <ItemsPanelTemplate x:Key="tplCanvas">
-            <Canvas />
+        <ScaleTransform x:Key="transformFlip" ScaleX="-1" ScaleY="-0.5" />
+        <ItemsPanelTemplate x:Key="templateCanvas">
+            <Canvas/>
         </ItemsPanelTemplate>
-        <Style x:Key="styFlipContainer" TargetType="FrameworkElement">
+        <Style x:Key="styleFlipContainer" TargetType="FrameworkElement">
             <Setter Property="RenderTransformOrigin" Value=".5 .5" />
-            <Setter Property="RenderTransform" Value="{StaticResource trfFlip}" />
+            <Setter Property="RenderTransform" Value="{StaticResource transformFlip}" />
         </Style>
-        <Style TargetType="ItemsControl" BasedOn="{StaticResource styFlipContainer}">
-            <Setter Property="ItemsPanel" Value="{StaticResource tplCanvas}" />
+        <Style TargetType="ItemsControl" BasedOn="{StaticResource styleFlipContainer}">
+            <Setter Property="ItemsPanel" Value="{StaticResource templateCanvas}" />
         </Style>
-        <Style TargetType="Canvas" BasedOn="{StaticResource styFlipContainer}"/>
-
-
-        <!-- Цвет свечи -->
-        <Style x:Key="styCandle" TargetType="Shape">
-            <Setter Property="Stroke" Value="OrangeRed" />
-            <Setter Property="Fill" Value="DarkRed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsPositive}" Value="True">
-                    <Setter Property="Stroke" Value="LawnGreen" />
-                    <Setter Property="Fill" Value="ForestGreen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Тень свечи -->
-        <DataTemplate x:Key="tplCandleLine" DataType="my:Candle">
-            <Rectangle Style="{StaticResource styCandle}" Width="2" Height="{Binding High}" />
-        </DataTemplate>
-        <Style x:Key="styCandleLine" TargetType="ContentPresenter">
-            <!--начальная координата свечи по оси X -->
-            <Setter Property="Canvas.Left" Value="{Binding Date}" />
-            <!--координата низ тени -->
-            <Setter Property="Canvas.Top" Value="{Binding Low}" />
-        </Style>
-        <!-- Тело свечи -->
-        <DataTemplate x:Key="tplCandleRect" DataType="my:Candle">
-            <Rectangle Style="{StaticResource styCandle}" Width="6" Height="{Binding Close}" Margin="-2 0 2 0" />
-        </DataTemplate>
-        <Style x:Key="styCandleRect" TargetType="ContentPresenter">
-            <!--начальная координата свечи по оси X -->
-            <Setter Property="Canvas.Left" Value="{Binding Date}"/>
-            <!--координата низ свечи -->
-            <Setter Property="Canvas.Top" Value="{Binding Open}"/>
-        </Style>
-        <!-- 5 линий -->
-        <DataTemplate x:Key="tplLineHorizontal" DataType="sys:Double">
-            <Rectangle Stroke="Gray" StrokeDashArray="4 8" StrokeThickness="1" Width="3400" Height="1" />
-        </DataTemplate>
-        <Style x:Key="styLabel" TargetType="ContentPresenter">
-            <Setter Property="Canvas.Top" Value="{Binding}" />
-        </Style>
+        <Style TargetType="Canvas" BasedOn="{StaticResource styleFlipContainer}"/>
     </Window.Resources>
     <Grid Margin="0,0,2,17">
         <TextBox Background="#FF3C3C3C" Foreground="White" x:Name="error_log" HorizontalAlignment="Right" Margin="0,255,21,0" TextWrapping="Wrap" Width="410" Height="97" VerticalAlignment="Top"/>
@@ -132,14 +91,75 @@
                     <Grid.RenderTransform>
                         <ScaleTransform x:Name="player1Scale" ScaleY="1"/>
                     </Grid.RenderTransform>
+                    <!--Линии-->
+                    <ItemsControl ItemsSource="{Binding Labels}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Stroke="Gray" StrokeDashArray="4 8" StrokeThickness="1" Width="3400" Height="1"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Top" Value="{Binding}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
                     <!--Тень свечи-->
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleLine}" ItemContainerStyle="{StaticResource styCandleLine}" />
+                    <ItemsControl ItemsSource="{Binding Candles}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="2" Height="{Binding High}">
+                                    <Shape.Style>
+                                        <Style TargetType="Shape">
+                                            <Setter Property="Stroke" Value="OrangeRed" />
+                                            <Setter Property="Fill" Value="DarkRed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPositive}" Value="True">
+                                                    <Setter Property="Stroke" Value="LawnGreen" />
+                                                    <Setter Property="Fill" Value="ForestGreen" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Shape.Style>
+                                </Rectangle>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding Date}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Low}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
                     <!--Тело свечи-->
-                    <ItemsControl ItemsSource="{Binding Candles}" ItemTemplate="{StaticResource tplCandleRect}" ItemContainerStyle="{StaticResource styCandleRect}" />
-                    
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Labels}" ItemTemplate="{StaticResource tplLineHorizontal}" ItemContainerStyle="{StaticResource styLabel}" />
-                    
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaLong}">
+                    <ItemsControl ItemsSource="{Binding Candles}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="6" Height="{Binding Close}" Margin="-2 0 2 0">
+                                    <Shape.Style>
+                                        <Style TargetType="Shape">
+                                            <Setter Property="Stroke" Value="OrangeRed" />
+                                            <Setter Property="Fill" Value="DarkRed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPositive}" Value="True">
+                                                    <Setter Property="Stroke" Value="LawnGreen" />
+                                                    <Setter Property="Fill" Value="ForestGreen" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Shape.Style>
+                                </Rectangle>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding Date}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Open}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                    <!--Ema long-->
+                    <ItemsControl ItemsSource="{Binding ListEmaLong}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Line X1="{Binding X_1}" X2="{Binding X_2}" Y1="{Binding Y_1}" Y2="{Binding Y_2}" StrokeThickness="2">
@@ -152,8 +172,8 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding ListEmaShort}">
+                    <!--Ema short-->
+                    <ItemsControl ItemsSource="{Binding ListEmaShort}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Line X1="{Binding X_1}" X2="{Binding X_2}" Y1="{Binding Y_1}" Y2="{Binding Y_2}" StrokeThickness="2">
@@ -166,14 +186,14 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                    <ItemsControl Grid.Column="2" ItemsSource="{Binding movement_history}">
+                    <!-- Линия ставки горизантальная-->
+                    <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y2}" Y2="{Binding Y1}" StrokeThickness="5">
+                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeDashArray="5" StrokeThickness="1">
                                     <Line.Style>
                                         <Style TargetType="Line">
-                                            <Setter Property="Stroke" Value="Red"/>
+                                            <Setter Property="Stroke" Value="#FFFF4600"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding isPositive}" Value="True">
                                                     <Setter Property="Stroke" Value="#FF17FF00" />
@@ -184,6 +204,91 @@
                                 </Line>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <!-- Линия ставки вертикальная short-->
+                    <ItemsControl ItemsSource="{Binding movement_history}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="1" Height="{Binding height_short}" StrokeDashArray="5 10" StrokeThickness="1" Stroke="#FFFF4600"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X2}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y2}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                    
+                    <!-- Линия ставки вертикальная long-->
+                    <ItemsControl ItemsSource="{Binding movement_history}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="1" Height="{Binding height_long}" StrokeDashArray="5 10" StrokeThickness="1" Stroke="#FF17FF00"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X2}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y1}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+
+                    <!-- Точка isPositive -->
+                    <ItemsControl ItemsSource="{Binding movement_history}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="10" Height="15" Margin="-4,-7" StrokeThickness="1">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#FFFFD100"/>
+                                            <Setter Property="Stroke" Value="Black" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding isPositive}" Value="True">
+                                                    <Setter Property="Fill" Value="#FF00AEFF" />
+                                                    <Setter Property="Stroke" Value="Black" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X2}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y2}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+
+                    <!-- Точка isLongPeriod -->
+                    <ItemsControl ItemsSource="{Binding movement_history}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="10" Height="15" Margin="-4,-7" StrokeThickness="1">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="Red"/>
+                                            <Setter Property="Stroke" Value="Black" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding isLongPeriod}" Value="True">
+                                                    <Setter Property="Fill" Value="Lime" />
+                                                    <Setter Property="Stroke" Value="Black" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X1}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y1}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
                 </Grid>
 

@@ -190,7 +190,7 @@
                     <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeThickness="2">
+                                <Line X1="{Binding X2}" X2="{Binding X1}" Y1="{Binding Y1}" Y2="{Binding Y1}" StrokeThickness="1">
                                     <Line.Style>
                                         <Style TargetType="Line">
                                             <Setter Property="Stroke" Value="#FFFFD100"/>
@@ -209,7 +209,7 @@
                     <ItemsControl ItemsSource="{Binding movement_history}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Line X1="{Binding X2}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y2}" StrokeThickness="2">
+                                <Line X1="{Binding X2}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y2}" StrokeThickness="1">
                                     <Line.Style>
                                         <Style TargetType="Line">
                                             <Setter Property="Stroke" Value="#FFFFD100"/>

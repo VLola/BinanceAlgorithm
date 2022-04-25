@@ -38,8 +38,6 @@ namespace BinanceAlgorithm.Resourses
             public int X2 { get; set; }
             public decimal Y1 { get; set; }
             public decimal Y2 { get; set; }
-            public decimal width { get; set; }
-            public decimal height { get; set; }
         }
     }
 }

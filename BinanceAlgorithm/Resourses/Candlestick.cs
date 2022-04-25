@@ -52,7 +52,13 @@ namespace BinanceAlgorithm.Resourses
                 decimal X = 200m;
                 decimal minus = 97m;
 
-                
+                for (int i = 0; i < movement_history.Count; i++)
+                {
+                    movement_history[i].Y1 = ((movement_history[i].Y1 * mul) - minus) * X;
+                    movement_history[i].X1 = movement_history[i].X1 * 7;
+                    movement_history[i].Y2 = ((movement_history[i].Y2 * mul) - minus) * X;
+                    movement_history[i].X2 = movement_history[i].X2 * 7;
+                }
 
                 int date = 0;
                 int count = 0;
@@ -70,20 +76,7 @@ namespace BinanceAlgorithm.Resourses
                     decimal open = ((it.Open * mul) - minus) * X;
                     decimal close = ((it.Close * mul) - minus) * X;
 
-                    for (int i = 0; i < movement_history.Count; i++)
-                    {
-                        if (date == (movement_history[i].X1 * 7))
-                        {
-                            movement_history[i].Y1 = ((movement_history[i].Y1 * mul) - minus) * X;
-                            movement_history[i].X1 = movement_history[i].X1 * 7;
-
-                        }
-                        else if (date == (movement_history[i].X2 * 7))
-                        {
-                            movement_history[i].Y2 = ((movement_history[i].Y2 * mul) - minus) * X;
-                            movement_history[i].X2 = movement_history[i].X2 * 7;
-                        }
-                    }
+                    
 
                     if (count < list.listKlines.Count - 1)
                     {
@@ -129,11 +122,6 @@ namespace BinanceAlgorithm.Resourses
                     ListEmaShort.Add(ema_short);
                 }
                 
-                foreach (var iterator in movement_history)
-                {
-                    iterator.width = iterator.X2 - iterator.X1;
-                    iterator.height = Math.Max(iterator.Y1, iterator.Y2) - Math.Min(iterator.Y1, iterator.Y2);
-                }
             }
             catch (Exception e)
             {

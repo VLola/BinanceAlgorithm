@@ -39,9 +39,9 @@ namespace BinanceAlgorithm
             LoadButtonsCompare();
             HistoryList.ItemsSource = history;
             dataView = CollectionViewSource.GetDefaultView(HistoryList.ItemsSource);
-            order_open.Text = "0,5";
-            order_sl.Text = "0,1";
-            order_tp.Text = "0,1";
+            order_open.Text = "0,3";
+            order_sl.Text = "0,3";
+            order_tp.Text = "0,3";
 
             MouseWheel += WindowChart_MouseWheel;
             MouseMove += WindowChart_MouseMove;
@@ -471,7 +471,11 @@ namespace BinanceAlgorithm
                 decimal tp = Convert.ToDecimal(order_tp.Text);
                 decimal sl = Convert.ToDecimal(order_sl.Text);
 
-                for(int i = 0;i < list_result.Count; i++) history.Add(ResultPercentEma.ResultHistory(list_result[i], list_ema_short.Ema[i], start, tp, sl));
+                string path = System.IO.Path.Combine(Environment.CurrentDirectory, "");
+                string json = File.ReadAllText(path + @"\times\" + cmbTest1.Text + ".txt");
+                var list = JsonConvert.DeserializeObject<List<ListKlines>>(json);
+
+                for (int i = 0;i < list_result.Count; i++) history.Add(ResultPercentEma.ResultHistory(list[i],list_result[i], start, tp, sl));
 
                 HistoryList.Items.Refresh();
             }
